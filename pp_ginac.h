@@ -1,5 +1,5 @@
-#ifndef GINAC_H
-#define GINAC_H
+#ifndef PP_GINAC_H
+#define PP_GINAC_H
 
 #include <ginac/ginac.h>
 
@@ -13,4 +13,5 @@ extern "C" {
 }
 #endif
 
-#endif
+#endif // PP_GINAC_H
+
