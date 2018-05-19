@@ -18,5 +18,13 @@ instance Fractional Expr where
     x / y        = undefined
     fromRational = undefined
 
+--instance Num GF where
+--    x + y        = undefined
+--    x * y        = undefined
+--    negate       = undefined
+--    abs    x     = undefined
+--    signum x     = undefined
+--    fromInteger  = undefined
+
 x :: Expr
 x = undefined

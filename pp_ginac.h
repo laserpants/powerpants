@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-// ...
+GiNaC::symbol *ginac_symbol();
 
 #ifdef __cplusplus
 }
