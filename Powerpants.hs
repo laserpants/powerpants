@@ -2,9 +2,9 @@ module Powerpants where
 
 import Ginac.FFI
 
-data Expr = Expr Ginac | X
+newtype Expr = Expr Ginac
 
-data GF = GF Expr
+newtype GF = GF Expr
 
 instance Num Expr where
     x + y        = undefined
@@ -17,3 +17,6 @@ instance Num Expr where
 instance Fractional Expr where
     x / y        = undefined
     fromRational = undefined
+
+x :: Expr
+x = undefined
