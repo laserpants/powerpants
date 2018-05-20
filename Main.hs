@@ -4,7 +4,7 @@ import Powerpants
 import Powerpants.Ginac
 
 baz = f 0 where
-  f n e = if 400 == n
+  f n e = if 514 == n
           then []
           else eval (e / factorial n) 0 : f (n + 1) (diff e)
 
@@ -13,6 +13,8 @@ main = do
     let xs = baz (1/(1-x))
     mapM_ printEx xs
   
+    print "--------"
+
 --    let bx = GF $ 1 / (1 - x)
 --    let cx = ax + bx
 --    printGF cx
@@ -25,10 +27,8 @@ main = do
 --    printEx zz
 --
 
+    let ax = x / (1 - x - x^2) -- :: Expr
 
-    let phi = undefined
-    let chi = undefined
-  
-    let ax = (pow phi x) - (pow chi x) :: Expr
+    mapM_ printEx (baz ax)
 
     pure ()

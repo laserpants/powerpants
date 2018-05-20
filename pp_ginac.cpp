@@ -68,7 +68,7 @@ ex *ginac_mul(ex *e_1, ex *e_2)
 
 ex *ginac_div(ex *e_1, ex *e_2)
 {
-    return new ex(mul(*e_1, power(*e_2, -1)));
+    return new ex(mul(*e_1, pow(*e_2, -1)));
 }
 
 ex *ginac_pow(ex *e_1, ex *e_2)
