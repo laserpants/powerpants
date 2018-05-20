@@ -1,16 +1,16 @@
-module Powerpants where
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+module Powerpants 
+  ( GF(..)
+  , x
+  , printGF
+  ) where
 
 import Ginac
 
-newtype GF = GF Expr
-
---instance Num GF where
---    x + y        = undefined
---    x * y        = undefined
---    negate       = undefined
---    abs    x     = undefined
---    signum x     = undefined
---    fromInteger  = undefined
+newtype GF = GF Expr deriving (Num)
 
 x :: Expr
 x = Expr symbol
+
+printGF :: GF -> IO ()
+printGF (GF ex) = printEx ex
