@@ -3,10 +3,10 @@ module Main where
 import Powerpants
 import Powerpants.Ginac
 
-baz = f 10 where
-  f n e = if 0 == n
+baz = f 0 where
+  f n e = if 400 == n
           then []
-          else eval e 0 : f (n - 1) (diff e)
+          else eval (e / factorial n) 0 : f (n + 1) (diff e)
 
 main :: IO ()
 main = do

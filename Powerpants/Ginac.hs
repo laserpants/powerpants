@@ -6,6 +6,7 @@ module Powerpants.Ginac
   , add
   , diff
   , eval
+  , factorial
   , mul
   , neg
   , num

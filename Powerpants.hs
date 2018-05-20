@@ -3,6 +3,7 @@ module Powerpants
   ( GF(..)
   , Powerpants.Ginac.diff
   , Powerpants.Ginac.eval
+  , Powerpants.Ginac.factorial
   , x
   , printGF
   ) where
