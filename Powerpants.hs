@@ -1,5 +1,5 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-module Powerpants 
+module Powerpants
   ( GF(..)
   , x
   , printGF
