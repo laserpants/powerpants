@@ -74,6 +74,9 @@ signum (Ex ptr) = makeForeign (withForeignPtr ptr ginac_signum)
 diff :: Expr -> Expr
 diff (Ex ptr) = makeForeign (withForeignPtr ptr ginac_diff)
 
+factorial :: Int -> Expr
+factorial = makeForeign . ginac_factorial
+
 eval :: Expr -> Int -> Expr
 eval (Ex ptr) i = makeForeign (withForeignPtr ptr (ginac_eval i))
 
