@@ -10,7 +10,7 @@ import Ginac
 newtype GF = GF Expr deriving (Num)
 
 x :: Expr
-x = Expr symbol
+x = Ex symbol
 
 printGF :: GF -> IO ()
 printGF (GF ex) = printEx ex
