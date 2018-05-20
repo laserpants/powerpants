@@ -1,6 +1,7 @@
 module Main where
 
 import Powerpants
+import Ginac
 
 main :: IO ()
 main = do
@@ -8,4 +9,7 @@ main = do
     let bx = GF (2 + x) -- $ 1 / (1 - x)
     let cx = ax + bx
     printGF cx
+    let b = num (-5)
+    let c = Ginac.abs b
+    printEx c
     pure ()

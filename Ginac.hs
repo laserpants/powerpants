@@ -1,5 +1,11 @@
 module Ginac
   ( Expr(..)
+  , Ginac.abs
+  , Ginac.div
+  , add
+  , mul
+  , neg
+  , num
   , printEx
   , symbol
   ) where
