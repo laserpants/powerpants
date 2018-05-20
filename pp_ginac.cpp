@@ -24,3 +24,8 @@ void ginac_ex_free(ex *e)
 {
     delete e;
 }
+
+void ginac_ex_print(ex *e)
+{
+    std::cout << *e << std::endl;
+}

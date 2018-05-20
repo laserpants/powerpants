@@ -11,6 +11,7 @@ GiNaC::symbol *ginac_symbol();
 GiNaC::ex *ginac_ex_new_symbol(GiNaC::symbol *s);
 GiNaC::ex *ginac_ex_new_x();
 void ginac_ex_free(GiNaC::ex *e);
+void ginac_ex_print(GiNaC::ex *e);
 
 #ifdef __cplusplus
 }
