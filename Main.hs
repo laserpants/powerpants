@@ -14,5 +14,6 @@ main = do
 --    printEx c
     let xx = 1 / (1 - x) :: Expr
     let yy = eval xx 0
-    printEx yy
+    let zz = diff xx
+    printEx zz
     pure ()

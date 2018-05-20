@@ -4,6 +4,7 @@ module Powerpants.Ginac
   , Powerpants.Ginac.div
   , Powerpants.Ginac.signum
   , add
+  , diff
   , eval
   , mul
   , neg
@@ -69,6 +70,9 @@ abs (Ex ptr) = makeForeign (withForeignPtr ptr ginac_abs)
 
 signum :: Expr -> Expr
 signum (Ex ptr) = makeForeign (withForeignPtr ptr ginac_signum)
+
+diff :: Expr -> Expr
+diff (Ex ptr) = makeForeign (withForeignPtr ptr ginac_diff)
 
 eval :: Expr -> Int -> Expr
 eval (Ex ptr) i = makeForeign (withForeignPtr ptr (ginac_eval i))
