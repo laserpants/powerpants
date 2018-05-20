@@ -1,6 +1,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Powerpants
   ( GF(..)
+  , Powerpants.Ginac.eval
   , x
   , printGF
   ) where
