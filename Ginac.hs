@@ -1,4 +1,4 @@
-module Ginac 
+module Ginac
   ( Expr(..)
   , printEx
   , symbol
@@ -25,9 +25,9 @@ instance Fractional Expr where
 
 type Binop = Ptr GinacEx -> Ptr GinacEx -> IO (Ptr GinacEx)
 
-applyBinop :: Binop -> GinacExPtr -> GinacExPtr -> IO (Ptr GinacEx)
-applyBinop op ex_1 ex_2 = 
-  withForeignPtr ex_1 $ \ptr_1 -> 
+applyBinop :: Binop -> Expr -> Expr -> IO (Ptr GinacEx)
+applyBinop op (Ex ex_1) (Ex ex_2) =
+  withForeignPtr ex_1 $ \ptr_1 ->
     withForeignPtr ex_2 $ \ptr_2 ->
       op ptr_1 ptr_2
 
@@ -39,8 +39,8 @@ symbol :: GinacExPtr
 symbol = unsafePerformIO (ginac_ex_new_x >>= newForeignPtr ginac_ex_free_fun)
 
 add :: Expr -> Expr -> Expr
-add (Ex ex_1) (Ex ex_2) = unsafeExpr ptr where
-  ptr = applyBinop ginac_add ex_1 ex_2 >>= newForeignPtr ginac_ex_free_fun
+add ex_1 ex_2 = unsafeExpr expr where
+  expr = applyBinop ginac_add ex_1 ex_2 >>= newForeignPtr ginac_ex_free_fun
 
 mul :: Expr -> Expr -> Expr
 mul = undefined
@@ -55,7 +55,8 @@ num :: Int -> Expr
 num i = unsafeExpr (ginac_ex_new_int i >>= newForeignPtr ginac_ex_free_fun)
 
 abs :: Expr -> Expr
-abs = undefined
+abs (Ex ptr) = unsafeExpr expr where
+  expr = withForeignPtr ptr ginac_abs >>= newForeignPtr ginac_ex_free_fun
 
 signum :: Expr -> Expr
 signum = undefined
