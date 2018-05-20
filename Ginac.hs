@@ -15,8 +15,8 @@ instance Num Expr where
     x + y        = add x y
     x * y        = mul x y
     negate       = neg
-    abs x        = undefined
-    signum x     = undefined
+    abs          = Ginac.abs
+    signum       = Ginac.signum
     fromInteger  = num . fromIntegral
 
 instance Fractional Expr where
@@ -53,6 +53,12 @@ neg = undefined
 
 num :: Int -> Expr
 num i = unsafeExpr (ginac_ex_new_int i >>= newForeignPtr ginac_ex_free_fun)
+
+abs :: Expr -> Expr
+abs = undefined
+
+signum :: Expr -> Expr
+signum = undefined
 
 rational :: Rational -> Expr
 rational r = fromInteger (numerator r) / fromInteger (denominator r)
