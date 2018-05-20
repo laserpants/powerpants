@@ -11,6 +11,7 @@ module Powerpants.Ginac
   , neg
   , num
   , printEx
+  , sqrt
   , symbol
   ) where
 
@@ -77,6 +78,9 @@ diff (Ex ptr) = makeForeign (withForeignPtr ptr ginac_diff)
 
 factorial :: Int -> Expr
 factorial = makeForeign . ginac_factorial
+
+sqrt :: Expr -> Expr
+sqrt (Ex ptr) = makeForeign (withForeignPtr ptr ginac_sqrt)
 
 eval :: Expr -> Int -> Expr
 eval (Ex ptr) i = makeForeign (withForeignPtr ptr (ginac_eval i))
