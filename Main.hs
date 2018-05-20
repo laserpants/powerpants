@@ -3,9 +3,16 @@ module Main where
 import Powerpants
 import Powerpants.Ginac
 
+baz = f 10 where
+  f n e = if 0 == n
+          then []
+          else eval e 0 : f (n - 1) (diff e)
+
 main :: IO ()
 main = do
---    let ax = GF $ 1 / (1 - x)
+    let xs = baz (1/(1-x))
+    mapM_ printEx xs
+  
 --    let bx = GF $ 1 / (1 - x)
 --    let cx = ax + bx
 --    printGF cx
