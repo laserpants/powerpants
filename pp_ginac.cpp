@@ -81,6 +81,11 @@ GiNaC::ex *ginac_factorial(int n, GiNaC::ex *e)
     return new ex(factorial(n));
 }
 
+ex *ginac_sqrt(ex *e)
+{
+    return new ex(sqrt(*e));
+}
+
 GiNaC::ex *ginac_eval(int i, GiNaC::ex *e)
 {
     return new ex(e->subs(x == i));
