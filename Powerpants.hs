@@ -4,6 +4,8 @@ module Powerpants
   , Powerpants.Ginac.diff
   , Powerpants.Ginac.eval
   , Powerpants.Ginac.factorial
+  , Powerpants.Ginac.pow
+  , Powerpants.Ginac.sqrt
   , x
   , printGF
   ) where
