@@ -21,3 +21,6 @@ instance Fractional Expr where
 symbol :: GinacExPtr
 {-# NOINLINE symbol #-}
 symbol = unsafePerformIO (ginac_ex_new_x >>= newForeignPtr ginac_ex_free_fun)
+
+printEx :: Expr -> IO ()
+printEx (Expr ptr) = withForeignPtr ptr ginac_ex_print
