@@ -5,7 +5,7 @@ import Foreign
 data GinacEx
 data GinacSymbol
 
-type Ginac = ForeignPtr GinacEx
+type GinacExPtr = ForeignPtr GinacEx
 
 foreign import ccall "ginac_symbol"
     ginac_symbol :: IO (Ptr GinacSymbol)
