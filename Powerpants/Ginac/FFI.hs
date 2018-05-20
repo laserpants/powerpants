@@ -37,6 +37,9 @@ foreign import ccall "ginac_mul"
 foreign import ccall "ginac_div"
     ginac_div :: Ptr GinacEx -> Ptr GinacEx -> IO (Ptr GinacEx)
 
+foreign import ccall "ginac_pow"
+    ginac_pow :: Ptr GinacEx -> Ptr GinacEx -> IO (Ptr GinacEx)
+
 foreign import ccall "ginac_abs"
     ginac_abs :: Ptr GinacEx -> IO (Ptr GinacEx)
 

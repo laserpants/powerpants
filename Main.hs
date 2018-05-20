@@ -19,8 +19,16 @@ main = do
 --    let b = num 8
 --    let c = Powerpants.Ginac.signum b
 --    printEx c
-    let xx = 1 / (1 - x) :: Expr
-    let yy = eval xx 0
-    let zz = diff xx
-    printEx zz
+--    let xx = 1 / (1 - x) :: Expr
+--    let yy = eval xx 0
+--    let zz = diff xx
+--    printEx zz
+--
+
+
+    let phi = undefined
+    let chi = undefined
+  
+    let ax = (pow phi x) - (pow chi x) :: Expr
+
     pure ()

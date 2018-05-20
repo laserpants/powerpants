@@ -3,6 +3,7 @@ module Powerpants.Ginac
   , Powerpants.Ginac.abs
   , Powerpants.Ginac.div
   , Powerpants.Ginac.signum
+  , Powerpants.Ginac.sqrt
   , add
   , diff
   , eval
@@ -10,8 +11,8 @@ module Powerpants.Ginac
   , mul
   , neg
   , num
+  , pow
   , printEx
-  , sqrt
   , symbol
   ) where
 
@@ -60,6 +61,9 @@ mul ex_1 ex_2 = makeForeign (applyBinop ginac_mul ex_1 ex_2)
 
 div :: Expr -> Expr -> Expr
 div ex_1 ex_2 = makeForeign (applyBinop ginac_div ex_1 ex_2)
+
+pow :: Expr -> Expr -> Expr
+pow ex_1 ex_2 = makeForeign (applyBinop ginac_pow ex_1 ex_2)
 
 neg :: Expr -> Expr
 neg (Ex ptr) = makeForeign (withForeignPtr ptr ginac_neg)
