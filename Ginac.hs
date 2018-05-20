@@ -4,6 +4,7 @@ module Ginac
   , symbol
   ) where
 
+import Data.Ratio
 import Foreign
 import Ginac.FFI
 import System.IO.Unsafe
@@ -12,15 +13,15 @@ newtype Expr = Ex GinacExPtr
 
 instance Num Expr where
     x + y        = add x y
-    x * y        = undefined
-    negate       = undefined
-    abs    x     = undefined
+    x * y        = mul x y
+    negate       = neg
+    abs x        = undefined
     signum x     = undefined
     fromInteger  = num . fromIntegral
 
 instance Fractional Expr where
-    x / y        = undefined
-    fromRational = undefined
+    x / y        = Ginac.div x y
+    fromRational = rational
 
 type Binop = Ptr GinacEx -> Ptr GinacEx -> IO (Ptr GinacEx)
 
@@ -41,8 +42,20 @@ add :: Expr -> Expr -> Expr
 add (Ex ex_1) (Ex ex_2) = unsafeExpr ptr where
   ptr = applyBinop ginac_add ex_1 ex_2 >>= newForeignPtr ginac_ex_free_fun
 
+mul :: Expr -> Expr -> Expr
+mul = undefined
+
+div :: Expr -> Expr -> Expr
+div = undefined
+
+neg :: Expr -> Expr
+neg = undefined
+
 num :: Int -> Expr
 num i = unsafeExpr (ginac_ex_new_int i >>= newForeignPtr ginac_ex_free_fun)
+
+rational :: Rational -> Expr
+rational r = fromInteger (numerator r) / fromInteger (denominator r)
 
 printEx :: Expr -> IO ()
 printEx (Ex ptr) = withForeignPtr ptr ginac_ex_print
