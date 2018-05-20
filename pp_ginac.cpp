@@ -40,6 +40,11 @@ ex *ginac_abs(ex *e)
     return new ex(abs(*e));
 }
 
+ex *ginac_signum(ex *e)
+{
+    
+}
+
 ex *ginac_add(ex *e_1, ex *e_2)
 {
     return new ex(add(*e_1, *e_2));
