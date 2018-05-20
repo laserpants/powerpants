@@ -9,7 +9,7 @@ main = do
     let bx = GF (2 + x) -- $ 1 / (1 - x)
     let cx = ax + bx
     printGF cx
-    let b = num (-5)
-    let c = Powerpants.Ginac.abs b
+    let b = num 8
+    let c = Powerpants.Ginac.signum b
     printEx c
     pure ()

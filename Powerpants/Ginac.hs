@@ -41,13 +41,15 @@ applyBinop op (Ex ex_1) (Ex ex_2) =
 unsafeExpr :: IO GinacExPtr -> Expr
 unsafeExpr = Ex . unsafePerformIO
 
+makeForeign :: IO (Ptr GinacEx) -> Expr
+makeForeign io = unsafeExpr (io >>= newForeignPtr ginac_ex_free_fun)
+
 symbol :: GinacExPtr
 {-# NOINLINE symbol #-}
 symbol = unsafePerformIO (ginac_ex_new_x >>= newForeignPtr ginac_ex_free_fun)
 
 add :: Expr -> Expr -> Expr
-add ex_1 ex_2 = unsafeExpr expr where
-  expr = applyBinop ginac_add ex_1 ex_2 >>= newForeignPtr ginac_ex_free_fun
+add ex_1 ex_2 = makeForeign (applyBinop ginac_add ex_1 ex_2)
 
 mul :: Expr -> Expr -> Expr
 mul = undefined
@@ -59,14 +61,13 @@ neg :: Expr -> Expr
 neg = undefined
 
 num :: Int -> Expr
-num i = unsafeExpr (ginac_ex_new_int i >>= newForeignPtr ginac_ex_free_fun)
+num = makeForeign . ginac_ex_new_int
 
 abs :: Expr -> Expr
-abs (Ex ptr) = unsafeExpr expr where
-  expr = withForeignPtr ptr ginac_abs >>= newForeignPtr ginac_ex_free_fun
+abs (Ex ptr) = makeForeign (withForeignPtr ptr ginac_abs)
 
 signum :: Expr -> Expr
-signum = undefined
+signum (Ex ptr) = makeForeign (withForeignPtr ptr ginac_signum)
 
 rational :: Rational -> Expr
 rational r = fromInteger (numerator r) / fromInteger (denominator r)

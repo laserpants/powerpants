@@ -42,7 +42,13 @@ ex *ginac_abs(ex *e)
 
 ex *ginac_signum(ex *e)
 {
-    
+    if (*e > 0) {
+        return new ex(1);
+    } else if (*e < 0) {
+        return new ex(-1);
+    } else {
+        return new ex(0);
+    }
 }
 
 ex *ginac_add(ex *e_1, ex *e_2)
