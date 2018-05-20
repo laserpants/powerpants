@@ -10,6 +10,9 @@ type GinacExPtr = ForeignPtr GinacEx
 foreign import ccall "ginac_symbol"
     ginac_symbol :: IO (Ptr GinacSymbol)
 
+foreign import ccall "ginac_ex_new_int"
+    ginac_ex_new_int :: Int -> IO (Ptr GinacEx)
+
 foreign import ccall "ginac_ex_new_symbol"
     ginac_ex_new_symbol :: Ptr GinacSymbol -> IO (Ptr GinacEx)
 
@@ -24,3 +27,6 @@ foreign import ccall "&ginac_ex_free"
 
 foreign import ccall "ginac_ex_print"
     ginac_ex_print :: Ptr GinacEx -> IO ()
+
+foreign import ccall "ginac_add"
+    ginac_add :: Ptr GinacEx -> Ptr GinacEx -> IO (Ptr GinacEx)
