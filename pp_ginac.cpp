@@ -51,7 +51,22 @@ ex *ginac_signum(ex *e)
     }
 }
 
+ex *ginac_neg(ex *e)
+{
+    return new ex(mul(-1, *e));
+}
+
 ex *ginac_add(ex *e_1, ex *e_2)
 {
     return new ex(add(*e_1, *e_2));
+}
+
+ex *ginac_mul(ex *e_1, ex *e_2)
+{
+    return new ex(mul(*e_1, *e_2));
+}
+
+ex *ginac_div(ex *e_1, ex *e_2)
+{
+    return new ex(mul(*e_1, power(*e_2, -1)));
 }

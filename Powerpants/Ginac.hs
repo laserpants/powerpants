@@ -52,13 +52,13 @@ add :: Expr -> Expr -> Expr
 add ex_1 ex_2 = makeForeign (applyBinop ginac_add ex_1 ex_2)
 
 mul :: Expr -> Expr -> Expr
-mul = undefined
+mul ex_1 ex_2 = makeForeign (applyBinop ginac_mul ex_1 ex_2)
 
 div :: Expr -> Expr -> Expr
-div = undefined
+div ex_1 ex_2 = makeForeign (applyBinop ginac_div ex_1 ex_2)
 
 neg :: Expr -> Expr
-neg = undefined
+neg (Ex ptr) = makeForeign (withForeignPtr ptr ginac_neg)
 
 num :: Int -> Expr
 num = makeForeign . ginac_ex_new_int

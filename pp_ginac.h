@@ -15,7 +15,10 @@ void ginac_ex_free(GiNaC::ex *e);
 void ginac_ex_print(GiNaC::ex *e);
 GiNaC::ex *ginac_abs(GiNaC::ex *e);
 GiNaC::ex *ginac_signum(GiNaC::ex *e);
+GiNaC::ex *ginac_neg(GiNaC::ex *e);
 GiNaC::ex *ginac_add(GiNaC::ex *e_1, GiNaC::ex *e_2);
+GiNaC::ex *ginac_mul(GiNaC::ex *e_1, GiNaC::ex *e_2);
+GiNaC::ex *ginac_div(GiNaC::ex *e_1, GiNaC::ex *e_2);
 
 #ifdef __cplusplus
 }
