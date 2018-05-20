@@ -1,7 +1,8 @@
-module Ginac
+module Powerpants.Ginac
   ( Expr(..)
-  , Ginac.abs
-  , Ginac.div
+  , Powerpants.Ginac.abs
+  , Powerpants.Ginac.div
+  , Powerpants.Ginac.signum
   , add
   , mul
   , neg
@@ -12,7 +13,7 @@ module Ginac
 
 import Data.Ratio
 import Foreign
-import Ginac.FFI
+import Powerpants.Ginac.FFI
 import System.IO.Unsafe
 
 newtype Expr = Ex GinacExPtr
@@ -21,12 +22,12 @@ instance Num Expr where
     x + y        = add x y
     x * y        = mul x y
     negate       = neg
-    abs          = Ginac.abs
-    signum       = Ginac.signum
+    abs          = Powerpants.Ginac.abs
+    signum       = Powerpants.Ginac.signum
     fromInteger  = num . fromIntegral
 
 instance Fractional Expr where
-    x / y        = Ginac.div x y
+    x / y        = Powerpants.Ginac.div x y
     fromRational = rational
 
 type Binop = Ptr GinacEx -> Ptr GinacEx -> IO (Ptr GinacEx)

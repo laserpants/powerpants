@@ -1,4 +1,4 @@
-module Ginac.FFI where
+module Powerpants.Ginac.FFI where
 
 import Foreign
 

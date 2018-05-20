@@ -5,7 +5,7 @@ module Powerpants
   , printGF
   ) where
 
-import Ginac
+import Powerpants.Ginac
 
 newtype GF = GF Expr deriving (Num)
 
