@@ -13,4 +13,4 @@ newtype GF = GF Expr
 --    fromInteger  = undefined
 
 x :: Expr
-x = undefined
+x = Expr symbol
