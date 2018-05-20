@@ -21,3 +21,6 @@ foreign import ccall "ginac_ex_free"
 
 foreign import ccall "&ginac_ex_free"
     ginac_ex_free_fun :: FunPtr (Ptr GinacEx -> IO ())
+
+foreign import ccall "ginac_ex_print"
+    ginac_ex_print :: Ptr GinacEx -> IO ()
