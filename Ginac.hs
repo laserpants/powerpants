@@ -2,8 +2,9 @@ module Ginac where
 
 import Foreign
 import Ginac.FFI
+import System.IO.Unsafe
 
-newtype Expr = Expr Ginac
+newtype Expr = Expr GinacExPtr
 
 instance Num Expr where
     x + y        = undefined
@@ -17,5 +18,6 @@ instance Fractional Expr where
     x / y        = undefined
     fromRational = undefined
 
-symbolX :: Ginac
-symbolX = undefined
+symbol :: GinacExPtr
+{-# NOINLINE symbol #-}
+symbol = unsafePerformIO (ginac_ex_new_x >>= newForeignPtr ginac_ex_free_fun)
