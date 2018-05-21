@@ -73,7 +73,7 @@ ex *ginac_div(ex *e_1, ex *e_2)
 
 ex *ginac_pow(ex *e_1, ex *e_2)
 {
-    return new ex(power(*e_1, *e_2));
+    return new ex(pow(*e_1, *e_2));
 }
 
 ex *ginac_diff(ex *e)
@@ -91,7 +91,22 @@ ex *ginac_sqrt(ex *e)
     return new ex(sqrt(*e));
 }
 
-GiNaC::ex *ginac_eval(int i, GiNaC::ex *e)
+GiNaC::ex *ginac_subs(int i, GiNaC::ex *e)
 {
     return new ex(e->subs(x == i));
+}
+
+bool ginac_is_numeric(ex *e)
+{
+    return is_a<numeric>(*e);
+}
+
+double ginac_ex_to_double(GiNaC::ex *e)
+{
+    return ex_to<numeric>(*e).to_double();
+}
+
+int ginac_ex_to_int(GiNaC::ex *e)
+{
+    return ex_to<numeric>(*e).to_int();
 }
