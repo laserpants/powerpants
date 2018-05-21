@@ -1,6 +1,6 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Powerpants
-  ( GF(..)
+  ( OGF(..)
   , Powerpants.Ginac.diff
   , Powerpants.Ginac.eval
   , Powerpants.Ginac.factorial
@@ -12,10 +12,10 @@ module Powerpants
 
 import Powerpants.Ginac
 
-newtype GF = GF Expr deriving (Num, Fractional)
+newtype OGF = OGF Expr deriving (Num, Fractional)
 
-x :: GF
-x = GF (Ex symbol)
+x :: OGF
+x = OGF (Ex symbol)
 
-printGF :: GF -> IO ()
-printGF (GF ex) = printEx ex
+printGF :: OGF -> IO ()
+printGF (OGF ex) = printEx ex

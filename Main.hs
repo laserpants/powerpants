@@ -4,9 +4,9 @@ import Powerpants
 import Powerpants.Ginac
 
 baz = f 0 where
-  f n (GF ex) = if 614 == n
+  f n (OGF ex) = if 614 == n
           then []
-          else eval (ex / factorial n) 0 : f (n + 1) (GF (diff ex))
+          else eval (ex / factorial n) 0 : f (n + 1) (OGF (diff ex))
 
 main :: IO ()
 main = do
@@ -27,7 +27,7 @@ main = do
 --    printEx zz
 --
 
-    let ax = x / (1 - x - x^2) :: GF
+    let ax = x / (1 - x - x^2) :: OGF
 
     mapM_ printEx (baz ax)
 
