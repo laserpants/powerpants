@@ -1,34 +1,25 @@
 module Main where
 
+import Data.Maybe ( fromJust )
 import Powerpants
 import Powerpants.Ginac
 
-baz = f 0 where
-  f n (OGF ex) = if 614 == n
-          then []
-          else eval (ex / factorial n) 0 : f (n + 1) (OGF (diff ex))
+take :: Int -> OGF -> [Integer]
+take m gf = (round . fromJust) <$> rec 0 gf where
+  rec n (OGF ex) = if m == n
+    then []
+    else Powerpants.eval (OGF (ex/factorial n)) 0 : rec (n + 1) (OGF (diff ex))
 
 main :: IO ()
 main = do
---    let xs = baz (1/(1-x))
---    mapM_ printEx xs
---  
---    print "--------"
---
---    let bx = GF $ 1 / (1 - x)
---    let cx = ax + bx
---    printGF cx
---    let b = num 8
---    let c = Powerpants.Ginac.signum b
---    printEx c
---    let xx = 1 / (1 - x) :: Expr
---    let yy = eval xx 0
---    let zz = diff xx
---    printEx zz
---
-
     let ax = x / (1 - x - x^2) :: OGF
 
-    mapM_ printEx (baz ax)
+    -- mapM_ print (Main.take 614 ax)
+
+    let bx = 1 / (1 - x) :: OGF
+    let cx = 1 / (2 - x) :: OGF
+    let dx = bx + cx
+
+    mapM_ print (Main.take 10 bx)
 
     pure ()
