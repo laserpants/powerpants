@@ -58,5 +58,14 @@ foreign import ccall "ginac_factorial"
 foreign import ccall "ginac_sqrt"
     ginac_sqrt :: Ptr GinacEx -> IO (Ptr GinacEx)
 
-foreign import ccall "ginac_eval"
-    ginac_eval :: Int -> Ptr GinacEx -> IO (Ptr GinacEx)
+foreign import ccall "ginac_subs"
+    ginac_subs :: Int -> Ptr GinacEx -> IO (Ptr GinacEx)
+
+foreign import ccall "ginac_is_numeric"
+    ginac_is_numeric :: Ptr GinacEx -> IO Bool
+
+foreign import ccall "ginac_ex_to_double"
+    ginac_ex_to_double :: Ptr GinacEx -> IO Double
+
+foreign import ccall "ginac_ex_to_int"
+    ginac_ex_to_int :: Ptr GinacEx -> IO Int
