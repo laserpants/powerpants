@@ -91,14 +91,13 @@ subs :: Expr -> Int -> Expr
 subs (Ex ptr) = makeForeign . withForeignPtr ptr . ginac_subs
 
 eval :: Expr -> Int -> Maybe Double
-eval (Ex ptr) i = unsafePerformIO (withForeignPtr ptr stuff)
-  where
-    stuff ptr = do
-      ex <- ginac_subs i ptr
-      isNum <- ginac_is_numeric ex
-      if isNum
-          then fmap Just (ginac_ex_to_double ex)
-          else pure Nothing
+eval (Ex ptr) i = unsafePerformIO (withForeignPtr ptr takeDbl) where
+  takeDbl ptr = do
+    ex <- ginac_subs i ptr
+    isNum <- ginac_is_numeric ex
+    if isNum
+        then fmap Just (ginac_ex_to_double ex)
+        else pure Nothing
 
 isNumeric :: Expr -> Bool
 isNumeric (Ex ptr) = unsafePerformIO (withForeignPtr ptr ginac_is_numeric)
