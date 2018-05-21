@@ -12,10 +12,10 @@ module Powerpants
 
 import Powerpants.Ginac
 
-newtype GF = GF Expr deriving (Num)
+newtype GF = GF Expr deriving (Num, Fractional)
 
-x :: Expr
-x = Ex symbol
+x :: GF
+x = GF (Ex symbol)
 
 printGF :: GF -> IO ()
 printGF (GF ex) = printEx ex
