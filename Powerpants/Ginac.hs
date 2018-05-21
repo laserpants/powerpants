@@ -13,6 +13,7 @@ module Powerpants.Ginac
   , num
   , pow
   , printEx
+  , subs
   , symbol
   ) where
 
@@ -86,8 +87,21 @@ factorial = makeForeign . ginac_factorial
 sqrt :: Expr -> Expr
 sqrt (Ex ptr) = makeForeign (withForeignPtr ptr ginac_sqrt)
 
-eval :: Expr -> Int -> Expr
-eval (Ex ptr) i = makeForeign (withForeignPtr ptr (ginac_eval i))
+subs :: Expr -> Int -> Expr
+subs (Ex ptr) = makeForeign . withForeignPtr ptr . ginac_subs
+
+eval :: Expr -> Int -> Maybe Double
+eval (Ex ptr) i = unsafePerformIO (withForeignPtr ptr stuff)
+  where
+    stuff ptr = do
+      ex <- ginac_subs i ptr
+      isNum <- ginac_is_numeric ex
+      if isNum
+          then fmap Just (ginac_ex_to_double ex)
+          else pure Nothing
+
+isNumeric :: Expr -> Bool
+isNumeric (Ex ptr) = unsafePerformIO (withForeignPtr ptr ginac_is_numeric)
 
 rational :: Rational -> Expr
 rational r = fromInteger (numerator r) / fromInteger (denominator r)
