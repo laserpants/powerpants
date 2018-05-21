@@ -14,12 +14,17 @@ main :: IO ()
 main = do
     let ax = x / (1 - x - x^2) :: OGF
 
-    -- mapM_ print (Main.take 614 ax)
+    -- print (Main.take 614 ax)
 
     let bx = 1 / (1 - x) :: OGF
-    let cx = 1 / (2 - x) :: OGF
+    let cx = 2 / (1 - x) :: OGF
     let dx = bx + cx
 
-    mapM_ print (Main.take 10 bx)
+    print (Main.take 10 ax)
+
+    print (Main.take 10 bx)
+    print (Main.take 10 cx)
+
+    print (Main.take 10 dx)
 
     pure ()
