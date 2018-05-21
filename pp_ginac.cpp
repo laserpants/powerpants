@@ -1,4 +1,5 @@
 #include <iostream>
+#include <limits>
 #include "pp_ginac.h"
 
 using namespace GiNaC;
@@ -68,7 +69,13 @@ ex *ginac_mul(ex *e_1, ex *e_2)
 
 ex *ginac_div(ex *e_1, ex *e_2)
 {
-    return new ex(mul(*e_1, pow(*e_2, -1)));
+    try {
+        const ex &n = *e_1;
+        const ex &d = *e_2;
+        return new ex(n / d);
+    } catch (pole_error e) {
+        return new ex(fail());
+    }
 }
 
 ex *ginac_pow(ex *e_1, ex *e_2)
