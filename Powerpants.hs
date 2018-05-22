@@ -1,25 +1,27 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Powerpants
+--  ( OGF(..)
   ( OGF(..)
-  , Powerpants.Ginac.diff
-  , Powerpants.Ginac.subs
-  , Powerpants.Ginac.factorial
-  , Powerpants.Ginac.pow
-  , Powerpants.Ginac.sqrt
+  , Powerpants.diff
   , Powerpants.eval
+  , Powerpants.toString
   , x
-  , printGF
   ) where
 
-import Powerpants.Ginac
+import Powerpants.Ginac ( Expr(..) )
 
-newtype OGF = OGF Expr deriving (Num, Fractional)
+import qualified Powerpants.Ginac as G
+
+newtype OGF = Gx Expr deriving (Num, Fractional)
 
 x :: OGF
-x = OGF (Ex symbol)
+x = Gx (Ex G.symbol)
 
 eval :: OGF -> Int -> Maybe Double
-eval (OGF ex) = Powerpants.Ginac.eval ex
+eval (Gx ex) = G.eval ex
 
-printGF :: OGF -> IO ()
-printGF (OGF ex) = printEx ex
+diff :: OGF -> OGF
+diff (Gx ex) = Gx (G.diff ex)
+
+toString :: OGF -> String
+toString (Gx ex) = G.toString ex
