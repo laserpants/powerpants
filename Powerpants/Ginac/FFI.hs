@@ -1,6 +1,7 @@
 module Powerpants.Ginac.FFI where
 
 import Foreign
+import Foreign.C.String
 
 data GinacEx
 data GinacSymbol
@@ -69,3 +70,6 @@ foreign import ccall "ginac_ex_to_double"
 
 foreign import ccall "ginac_ex_to_int"
     ginac_ex_to_int :: Ptr GinacEx -> IO Int
+
+foreign import ccall "ginac_ex_to_str"
+    ginac_ex_to_str :: Ptr GinacEx -> IO CString
