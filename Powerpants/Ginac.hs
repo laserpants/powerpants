@@ -6,6 +6,7 @@ module Powerpants.Ginac
   , Powerpants.Ginac.sqrt
   , add
   , diff
+  , diffn
   , eval
   , factorial
   , mul
@@ -81,7 +82,10 @@ signum :: Expr -> Expr
 signum (Ex ptr) = makeExpr (withForeignPtr ptr ginac_signum)
 
 diff :: Expr -> Expr
-diff (Ex ptr) = makeExpr (withForeignPtr ptr ginac_diff)
+diff (Ex ptr) = makeExpr (withForeignPtr ptr (ginac_diff 1))
+
+diffn :: Int -> Expr -> Expr
+diffn nth (Ex ptr) = makeExpr (withForeignPtr ptr (ginac_diff nth))
 
 factorial :: Int -> Expr
 factorial = makeExpr . ginac_factorial

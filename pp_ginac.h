@@ -20,7 +20,7 @@ GiNaC::ex *ginac_add(GiNaC::ex *e_1, GiNaC::ex *e_2);
 GiNaC::ex *ginac_mul(GiNaC::ex *e_1, GiNaC::ex *e_2);
 GiNaC::ex *ginac_div(GiNaC::ex *e_1, GiNaC::ex *e_2);
 GiNaC::ex *ginac_pow(GiNaC::ex *e_1, GiNaC::ex *e_2);
-GiNaC::ex *ginac_diff(GiNaC::ex *e);
+GiNaC::ex *ginac_diff(int nth, GiNaC::ex *e);
 GiNaC::ex *ginac_factorial(int n, GiNaC::ex *e);
 GiNaC::ex *ginac_sqrt(GiNaC::ex *e);
 GiNaC::ex *ginac_subs(int i, GiNaC::ex *e);

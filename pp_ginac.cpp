@@ -83,9 +83,9 @@ ex *ginac_pow(ex *e_1, ex *e_2)
     return new ex(pow(*e_1, *e_2));
 }
 
-ex *ginac_diff(ex *e)
+ex *ginac_diff(int nth, ex *e)
 {
-    return new ex(e->diff(x));
+    return new ex(e->diff(x, nth));
 }
 
 GiNaC::ex *ginac_factorial(int n, GiNaC::ex *e)
