@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <limits>
 #include "pp_ginac.h"
 
@@ -116,4 +117,11 @@ double ginac_ex_to_double(GiNaC::ex *e)
 int ginac_ex_to_int(GiNaC::ex *e)
 {
     return ex_to<numeric>(*e).to_int();
+}
+
+char *ginac_ex_to_str(GiNaC::ex *e)
+{
+    std::ostringstream s;
+    s << *e;
+    return strdup(s.str().c_str());
 }

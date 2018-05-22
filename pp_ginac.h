@@ -27,6 +27,7 @@ GiNaC::ex *ginac_subs(int i, GiNaC::ex *e);
 bool ginac_is_numeric(GiNaC::ex *e);
 double ginac_ex_to_double(GiNaC::ex *e);
 int ginac_ex_to_int(GiNaC::ex *e);
+char *ginac_ex_to_str(GiNaC::ex *e);
 
 #ifdef __cplusplus
 }
