@@ -10,18 +10,18 @@ module Powerpants
 
 import Powerpants.Ginac ( Expr(..) )
 
-import qualified Powerpants.Ginac as G
+import qualified Powerpants.Ginac as Ex
 
 newtype OGF = Gx Expr deriving (Num, Fractional)
 
 x :: OGF
-x = Gx (Ex G.symbol)
+x = Gx (Ex Ex.symbol)
 
 eval :: OGF -> Int -> Maybe Double
-eval (Gx ex) = G.eval ex
+eval (Gx ex) = Ex.eval ex
 
 diff :: OGF -> OGF
-diff (Gx ex) = Gx (G.diff ex)
+diff (Gx ex) = Gx (Ex.diff ex)
 
 toString :: OGF -> String
-toString (Gx ex) = G.toString ex
+toString (Gx ex) = Ex.toString ex
