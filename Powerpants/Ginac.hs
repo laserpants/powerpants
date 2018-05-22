@@ -15,10 +15,12 @@ module Powerpants.Ginac
   , printEx
   , subs
   , symbol
+  , toString
   ) where
 
 import Data.Ratio
 import Foreign
+import Foreign.C.String
 import Powerpants.Ginac.FFI
 import System.IO.Unsafe
 
@@ -47,48 +49,48 @@ applyBinop op (Ex ex_1) (Ex ex_2) =
 unsafeExpr :: IO GinacExPtr -> Expr
 unsafeExpr = Ex . unsafePerformIO
 
-makeForeign :: IO (Ptr GinacEx) -> Expr
-makeForeign io = unsafeExpr (io >>= newForeignPtr ginac_ex_free_fun)
+makeExpr :: IO (Ptr GinacEx) -> Expr
+makeExpr io = unsafeExpr (io >>= newForeignPtr ginac_ex_free_fun)
 
 symbol :: GinacExPtr
 {-# NOINLINE symbol #-}
 symbol = unsafePerformIO (ginac_ex_new_x >>= newForeignPtr ginac_ex_free_fun)
 
 add :: Expr -> Expr -> Expr
-add ex_1 ex_2 = makeForeign (applyBinop ginac_add ex_1 ex_2)
+add ex_1 ex_2 = makeExpr (applyBinop ginac_add ex_1 ex_2)
 
 mul :: Expr -> Expr -> Expr
-mul ex_1 ex_2 = makeForeign (applyBinop ginac_mul ex_1 ex_2)
+mul ex_1 ex_2 = makeExpr (applyBinop ginac_mul ex_1 ex_2)
 
 div :: Expr -> Expr -> Expr
-div ex_1 ex_2 = makeForeign (applyBinop ginac_div ex_1 ex_2)
+div ex_1 ex_2 = makeExpr (applyBinop ginac_div ex_1 ex_2)
 
 pow :: Expr -> Expr -> Expr
-pow ex_1 ex_2 = makeForeign (applyBinop ginac_pow ex_1 ex_2)
+pow ex_1 ex_2 = makeExpr (applyBinop ginac_pow ex_1 ex_2)
 
 neg :: Expr -> Expr
-neg (Ex ptr) = makeForeign (withForeignPtr ptr ginac_neg)
+neg (Ex ptr) = makeExpr (withForeignPtr ptr ginac_neg)
 
 num :: Int -> Expr
-num = makeForeign . ginac_ex_new_int
+num = makeExpr . ginac_ex_new_int
 
 abs :: Expr -> Expr
-abs (Ex ptr) = makeForeign (withForeignPtr ptr ginac_abs)
+abs (Ex ptr) = makeExpr (withForeignPtr ptr ginac_abs)
 
 signum :: Expr -> Expr
-signum (Ex ptr) = makeForeign (withForeignPtr ptr ginac_signum)
+signum (Ex ptr) = makeExpr (withForeignPtr ptr ginac_signum)
 
 diff :: Expr -> Expr
-diff (Ex ptr) = makeForeign (withForeignPtr ptr ginac_diff)
+diff (Ex ptr) = makeExpr (withForeignPtr ptr ginac_diff)
 
 factorial :: Int -> Expr
-factorial = makeForeign . ginac_factorial
+factorial = makeExpr . ginac_factorial
 
 sqrt :: Expr -> Expr
-sqrt (Ex ptr) = makeForeign (withForeignPtr ptr ginac_sqrt)
+sqrt (Ex ptr) = makeExpr (withForeignPtr ptr ginac_sqrt)
 
 subs :: Expr -> Int -> Expr
-subs (Ex ptr) = makeForeign . withForeignPtr ptr . ginac_subs
+subs (Ex ptr) = makeExpr . withForeignPtr ptr . ginac_subs
 
 eval :: Expr -> Int -> Maybe Double
 eval (Ex ptr) i = unsafePerformIO (withForeignPtr ptr takeDbl) where
@@ -104,6 +106,10 @@ isNumeric (Ex ptr) = unsafePerformIO (withForeignPtr ptr ginac_is_numeric)
 
 rational :: Rational -> Expr
 rational r = fromInteger (numerator r) / fromInteger (denominator r)
+
+toString :: Expr -> String
+toString (Ex ptr) = unsafePerformIO takeStr where
+  takeStr = withForeignPtr ptr ginac_ex_to_str >>= peekCString
 
 printEx :: Expr -> IO ()
 printEx (Ex ptr) = withForeignPtr ptr ginac_ex_print
