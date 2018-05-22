@@ -1,6 +1,5 @@
 #include <iostream>
 #include <sstream>
-#include <limits>
 #include "pp_ginac.h"
 
 using namespace GiNaC;
