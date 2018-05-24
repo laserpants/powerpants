@@ -39,7 +39,7 @@ packages:
 - .
 - location:
    git: https://github.com/laserpants/bindings-ginac.git
-   commit: b7282d8db584f5f61c456cc59ee9f1857b8fb112
+   commit: c4df99fadca1796d9e73982044508da449e561e9
   extra-dep: true
 
 # Dependency packages to be pulled from upstream that are not in the resolver
