@@ -1,3 +1,4 @@
 module Powerpants where
 
-import Ginac
+import Math.Ginac
+import Math.Ginac.Symbolic

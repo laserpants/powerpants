@@ -1,3 +1,6 @@
+.stack-work/
+powerpants.cabal
+*~
 *.o
-*.hi
-main
+*.out
+

@@ -1,6 +1,6 @@
 module Main where
 
-import Ginac
+import Powerpants
 
 main :: IO ()
 main = pure ()
