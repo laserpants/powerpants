@@ -1,0 +1,62 @@
+-- This file has been generated from package.yaml by hpack version 0.20.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 44c9ba11325ec64a6649f49c32fe6efa557ae303496b6d4eda9d3263ca134b34
+
+name:           powerpants
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/laserpants/powerpants#readme>
+homepage:       https://github.com/laserpants/powerpants#readme
+bug-reports:    https://github.com/laserpants/powerpants/issues
+author:         laserpants
+maintainer:     hildenjohannes@gmail.com
+copyright:      2018 Johannes Hildén
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
+
+extra-source-files:
+    ChangeLog.md
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/laserpants/powerpants
+
+library
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+    , bindings-ginac
+  other-modules:
+      Paths_powerpants
+  default-language: Haskell2010
+
+executable powerpants-exe
+  main-is: Main.hs
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , bindings-ginac
+    , powerpants
+  other-modules:
+      Paths_powerpants
+  default-language: Haskell2010
+
+test-suite powerpants-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , bindings-ginac
+    , powerpants
+  other-modules:
+      Paths_powerpants
+  default-language: Haskell2010
