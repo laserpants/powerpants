@@ -2,6 +2,7 @@
 module Powerpants where
 
 import Math.Ginac
+import Math.Ginac.FFI
 import Math.Ginac.Symbolic
 import System.IO.Unsafe
 
