@@ -1,7 +1,7 @@
 name:                powerpants
 version:             0.1.0.0
 github:              "laserpants/powerpants"
-# license:             GPL-2
+license:             BSD3
 author:              "laserpants"
 maintainer:          "hildenjohannes@gmail.com"
 copyright:           "2018 Johannes Hildén"
