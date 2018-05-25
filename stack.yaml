@@ -37,10 +37,11 @@ resolver: lts-11.10
 # will not be run. This is useful for tweaking upstream packages.
 packages:
 - .
-- location:
-   git: https://github.com/laserpants/bindings-ginac.git
-   commit: 27beee985276af41de21679c870921c6864d9665
-  extra-dep: true
+- /home/laserpants/code/bindings-ginac
+  # - location:
+  #    git: https://github.com/laserpants/bindings-ginac.git
+  #    commit: 1bfe65f6289c769c581b5ae08a4dd801a4666cd9
+  #   extra-dep: true
 
 # Dependency packages to be pulled from upstream that are not in the resolver
 # (e.g., acme-missiles-0.3)
