@@ -17,6 +17,9 @@ trim = canon . reverse . dropWhile (== 0) . reverse where
     canon [] = [zero]
     canon xs = xs
 
+px :: (Algebra.IntegralDomain.C a, Eq a) => [a] -> Polynomial a
+px = Px . trim
+
 instance (Algebra.IntegralDomain.C a, Eq a) => Algebra.Additive.C (Polynomial a)
   where
     (+)    = add
@@ -27,7 +30,7 @@ add :: (Algebra.IntegralDomain.C a, Eq a)
     => Polynomial a
     -> Polynomial a
     -> Polynomial a
-add (Px xs) (Px ys) = Px (trim (xs + ys))
+add (Px xs) (Px ys) = px (xs + ys)
 
 neg :: (Algebra.IntegralDomain.C a, Eq a) => Polynomial a -> Polynomial a
 neg (Px xs) = Px (fmap negate xs)
@@ -41,7 +44,7 @@ mul :: (Algebra.IntegralDomain.C a, Eq a)
     => Polynomial a
     -> Polynomial a
     -> Polynomial a
-mul (Px xs) (Px ys) = Px (trim (rec xs ys)) where
+mul (Px xs) (Px ys) = px (rec xs ys) where
     rec [] ys = [0]
     rec xs [] = [0]
     rec (x:xs) (y:ys) = x * y : x.* ys + y.* xs + (0 : rec xs ys)
@@ -56,7 +59,7 @@ x = Px [0, 1]
 derivative :: (Algebra.IntegralDomain.C a, Eq a, Enum a)
            => Polynomial a
            -> Polynomial a
-derivative (Px (_:xs)) = Px (trim (zipWith (*) xs [1..]))
+derivative (Px (_:xs)) = px (zipWith (*) xs [1..])
 
 eval :: (Algebra.Ring.C a) => Polynomial a -> a -> a
 eval (Px xs) c = sum (zipWith (*) xs [c^n | n <- [0..]])
