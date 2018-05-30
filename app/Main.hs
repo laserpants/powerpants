@@ -1,5 +1,4 @@
 {-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE RebindableSyntax #-}
 module Main where
 
 import NumericPrelude
@@ -8,4 +7,3 @@ import Powerpants
 
 main :: IO ()
 main = return ()
-

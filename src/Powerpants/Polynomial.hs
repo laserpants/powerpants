@@ -47,10 +47,6 @@ mul (Px xs) (Px ys) = Px (trim (rec xs ys)) where
     rec (x:xs) (y:ys) = x * y : x.* ys + y.* xs + (0 : rec xs ys)
     (.*) x = map (x*)
 
---mul (Px xs) (Px ys) = trim (foldr1 add (rec xs ys)) where
---    rec [] _      = [0]
---    rec (x:xs) ys = Px (fmap (*x) ys) : rec xs (0 : ys)
-
 constant :: (Algebra.IntegralDomain.C a, Eq a) => a -> Polynomial a
 constant = Px . pure
 
