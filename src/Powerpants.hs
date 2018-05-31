@@ -1,3 +1,3 @@
 module Powerpants where
 
-import Powerpants.Polynomial
+import Powerpants.Expr
