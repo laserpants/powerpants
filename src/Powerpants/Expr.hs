@@ -13,7 +13,7 @@ data Expr a
   | Mul ![Expr a]
   | Div !(Expr a) !(Expr a)
   | Pow !(Expr a) !Integer
-  deriving (Show, Eq)
+  deriving (Show, Eq, Ord)
 
 neg :: Algebra.Ring.C a => Expr a -> Expr a
 neg (Num n) = Num (negate n)
@@ -61,13 +61,3 @@ maybeAdd _ = Nothing
 maybeMul :: Expr a -> Maybe [Expr a]
 maybeMul (Mul xs) = Just xs
 maybeMul _ = Nothing
-
--- | Partition a list of 'Expr's into two lists; one with all constant values
---   of the list, and another list with the remaining expressions.
-collectNums :: [Expr a] -> ([a], [Expr a])
-collectNums = rec ([], []) where
-    rec p [] = p
-    rec (nums, xs') (x:xs) = rec p' xs where
-        p' = case x of
-               Num n -> (n:nums, xs')
-               _     -> (nums, x:xs')

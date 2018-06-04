@@ -3,17 +3,22 @@
 module Powerpants.Expr.Simplify where
 
 import Algebra.Ring
+import Data.List           ( sort )
 import NumericPrelude
 import Powerpants.Expr
 
---
--- Mul [x, y, Num m, z, Num n, ...]   ==>   Mul [x, y, z, Num (m * n), ...]
--- Add [x, y, Num m, z, Num n, ...]   ==>   Add [x, y, z, Num (m + n), ...]
--- Pow (Num x) n                      ==>   Num (x^n)
---
+-- | Partition a list of 'Expr's into two lists; one with all constant values
+--   of the list, and another list with the remaining expressions.
+collectNums :: [Expr a] -> ([a], [Expr a])
+collectNums = rec ([], []) where
+    rec p [] = p
+    rec (nums, xs') (x:xs) = rec p' xs where
+        p' = case x of
+               Num n -> (n:nums, xs')
+               _     -> (nums, x:xs')
 
--- | Combine multiple constants that occur below an addition or multiplication
---   node by adding or multiplying them into a single constant.
+-- | Combine multiple constants which occur below an addition or multiplication
+--   node by adding or multiplying them into a single 'Num' value.
 foldnums :: (Algebra.Ring.C a, Eq a, Ord a)
          => Expr a
          -> Expr a
@@ -46,10 +51,7 @@ collapse (Mul [ ]) = Num 1
 collapse (Mul [x]) = x
 collapse expr      = expr
 
---
--- Mul [a, b, Mul [x, y, ...], ...]   ==>   Mul [a, b, x, y, ...]
--- Add [a, b, Add [x, y, ...], ...]   ==>   Add [a, b, x, y, ...]
---
+-- | Flatten nested addition and multiplication nodes.
 flatten :: Expr a -> Expr a
 flatten expr =
     case expr of
@@ -64,3 +66,28 @@ flatten expr =
             res = case fn ex of
               Just xs -> xs ++ exs'
               Nothing -> ex:exs'
+
+-- | Transform the syntax tree so that a division node cannot be the immediate
+--   child of either a division node or a multiplication node.
+divnode :: Expr a -> Expr a
+divnode (Div (Div a b) c) = Div a (Mul [b, c])
+divnode (Div a (Div b c)) = Div (Mul [a, c]) b
+divnode (Mul xs) =
+    case rec [] xs of
+      (lhs, Div a b:rhs) -> let xs' = lhs ++ a:rhs in Div (divnode (Mul xs')) b
+      _                  -> Mul xs
+  where
+    rec ys []            = (reverse ys, [])
+    rec ys xs@(Div {}:_) = (reverse ys, xs)
+    rec ys (x:xs)        = rec (x:ys) xs
+divnode expr = expr
+
+ordered :: Ord a => Expr a -> Expr a
+ordered (Add xs)  = Add (sort xs)
+ordered (Mul xs)  = Mul (sort xs)
+ordered (Div a b) = Div (ordered a) (ordered b)
+ordered (Pow a n) = Pow (ordered a) n
+ordered expr      = expr
+
+canonical :: Expr a -> Expr a
+canonical = undefined
