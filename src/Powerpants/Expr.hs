@@ -59,20 +59,18 @@ isDiv _ = False
 isPow (Pow _ _) = True
 isPow _ = False
 
--- | Unwrap and return the value of an expression if it matches the 'Num'
---   constructor.
+-- | Unwrap and return the value of the expression, if it is a constant.
 unwrapNum :: Expr a -> Maybe a
 unwrapNum (Num n) = Just n
 unwrapNum _ = Nothing
 
--- | Unwrap and return the value of an expression if it matches the 'Add'
---   constructor.
+-- | Return the list of child expressions, if the value is an addition node.
 unwrapAdd :: Expr a -> Maybe [Expr a]
 unwrapAdd (Add xs) = Just xs
 unwrapAdd _ = Nothing
 
--- | Unwrap and return the value of an expression if it matches the 'Mul'
---   constructor.
+-- | Return the list of child expressions, if the value is an multiplication 
+--   node.
 unwrapMul :: Expr a -> Maybe [Expr a]
 unwrapMul (Mul xs) = Just xs
 unwrapMul _ = Nothing
