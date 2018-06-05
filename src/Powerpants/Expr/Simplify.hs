@@ -21,41 +21,41 @@ collectNums = rec ([], []) where
 
 -- | Combine multiple constants under an addition or multiplication node by
 --   adding or multiplying them into a single 'Num' value.
-foldnums :: (Algebra.Ring.C a, Eq a, Ord a)
+folded :: (Algebra.Ring.C a, Eq a, Ord a)
          => Expr a
          -> Expr a
-foldnums (Mul xs) =
+folded (Mul xs) =
     let (nums, rest) = collectNums xs
       in case product nums of
         0 -> Num 0
         1 -> Mul rest
         n -> Mul (Num n:rest)
-foldnums (Add xs) =
+folded (Add xs) =
     let (nums, rest) = collectNums xs
       in case sum nums of
         0 -> Add rest
         n -> Add (Num n:rest)
-foldnums (Pow (Num 0) n)      = Num 0
-foldnums (Pow a 0)            = Num 1
-foldnums (Pow a 1)            = a
-foldnums expr@(Pow (Num a) n) = let m = a^n in if m < 5000 then Num m else expr
-foldnums (Div a (Num 1))      = a
-foldnums expr                 = expr
+folded (Pow (Num 0) n)      = Num 0
+folded (Pow a 0)            = Num 1
+folded (Pow a 1)            = a
+folded expr@(Pow (Num a) n) = let m = a^n in if m < 5000 then Num m else expr
+folded (Div a (Num 1))      = a
+folded expr                 = expr
 
 -- | Replace empty addition and multiplication nodes with zero or one (i.e.,
 --   the operation's identity), and /pull out/ the expression from lists with
 --   only one element. After this step, any 'Add' or 'Mul' node will have at
 --   least two children.
-collapse :: (Algebra.Ring.C a) => Expr a -> Expr a
-collapse (Add [ ]) = Num 0
-collapse (Add [x]) = x
-collapse (Mul [ ]) = Num 1
-collapse (Mul [x]) = x
-collapse expr      = expr
+collapsed :: (Algebra.Ring.C a) => Expr a -> Expr a
+collapsed (Add [ ]) = Num 0
+collapsed (Add [x]) = x
+collapsed (Mul [ ]) = Num 1
+collapsed (Mul [x]) = x
+collapsed expr      = expr
 
 -- | Flatten (or /level/) nested addition and multiplication nodes.
-flatten :: Expr a -> Expr a
-flatten expr =
+flattened :: Expr a -> Expr a
+flattened expr =
     case expr of
       Mul xs -> Mul (level unwrapMul xs)
       Add xs -> Add (level unwrapAdd xs)
@@ -79,9 +79,9 @@ divnode (Mul xs) =
       (lhs, Div a b:rhs) -> let xs' = lhs ++ a:rhs in Div (divnode (Mul xs')) b
       _                  -> Mul xs
   where
-    rec ys []            = (reverse ys, [])
-    rec ys xs@(Div {}:_) = (reverse ys, xs)
-    rec ys (x:xs)        = rec (x:ys) xs
+    rec ys []             = (reverse ys, [])
+    rec ys xs@(Div {}:_)  = (reverse ys, xs)
+    rec ys (x:xs)         = rec (x:ys) xs
 divnode expr = expr
 
 ordered :: Ord a => Expr a -> Expr a
@@ -93,15 +93,32 @@ ordered expr      = expr
 
 groupSimilar :: (Ord a, Eq a) => [Expr a] -> [(Expr a, Int)]
 groupSimilar = foldr fn [] where
+    fn (Num n) al = (Num n, 1):al  -- Leave constants to be folded later
     fn expr al =
         case lookup expr al of
           Just n  -> insert (expr, succ n) (filter ((/= expr) . fst) al)
           Nothing -> insert (expr, 1) al
 
--- canonical :: Expr a -> Expr a
--- canonical (Add xs)  = undefined
--- canonical (Mul xs)  = undefined
--- canonical (Div a b) = undefined
--- canonical (Pow a n) = undefined
--- canonical (Num n)   = undefined
--- canonical X         = X
+combineUsing :: (Algebra.Ring.C a, Ord a) => ((Expr a, Int) -> Expr a) -> [Expr a] -> [Expr a]
+combineUsing fn xs = fmap (combined . fn) (groupSimilar xs)
+
+-- | Collect and combine like expressions so that, for example...
+combined :: (Algebra.Ring.C a, Ord a, Eq a) => Expr a -> Expr a
+combined (Mul xs) = Mul (combineUsing fn xs) where
+    fn (expr, 0)        = Num 1
+    fn (expr, 1)        = expr
+    fn (Pow a n, count) = Pow a (n * fromIntegral count)
+    fn (expr, count)    = Pow expr (fromIntegral count)
+combined (Add xs) = Add (combineUsing fn xs) where
+    fn (expr, 0)        = Num 0
+    fn (expr, 1)        = expr
+    fn (expr, count)    = Mul [Num (fromIntegral count), expr]
+combined expr = expr
+
+-- combined (Mul [Pow X 3, Pow X 5, X, X])  <-->  x^3 * x^5 * x * x
+
+-- combined (Add [Pow X 3, Pow X 5, X, X])  <-->  x^3 + x^5 + x + x
+
+-- combined (Add [Mul [Num 5, X], Mul [Num 3, X], X])  <-->  5*x + 3*x + x
+
+-- combined (Mul [X, X, X, X, X, Mul [Num 5, X]])
