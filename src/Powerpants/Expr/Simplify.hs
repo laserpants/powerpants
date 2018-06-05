@@ -3,12 +3,13 @@
 module Powerpants.Expr.Simplify where
 
 import Algebra.Ring
-import Data.List           ( sort )
+import Data.Functor        ( (<$>) )
+import Data.List           ( sort, insert )
 import NumericPrelude
 import Powerpants.Expr
 
 -- | Partition a list of 'Expr's into two lists; one with all constants (i.e.,
---   values wrapped in 'Num' constructors), and another with the remaining 
+--   values wrapped in 'Num' constructors), and another with the remaining
 --   expressions.
 collectNums :: [Expr a] -> ([a], [Expr a])
 collectNums = rec ([], []) where
@@ -18,7 +19,7 @@ collectNums = rec ([], []) where
                Num n -> (n:nums, xs')
                _     -> (nums, x:xs')
 
--- | Combine multiple constants under an addition or multiplication node by 
+-- | Combine multiple constants under an addition or multiplication node by
 --   adding or multiplying them into a single 'Num' value.
 foldnums :: (Algebra.Ring.C a, Eq a, Ord a)
          => Expr a
@@ -41,9 +42,9 @@ foldnums expr@(Pow (Num a) n) = let m = a^n in if m < 5000 then Num m else expr
 foldnums (Div a (Num 1))      = a
 foldnums expr                 = expr
 
--- | Replace empty addition and multiplication nodes with zero or one (i.e., 
---   the operation's identity), and /pull out/ the expression from lists with 
---   only one element. After this step, any 'Add' or 'Mul' node will have at 
+-- | Replace empty addition and multiplication nodes with zero or one (i.e.,
+--   the operation's identity), and /pull out/ the expression from lists with
+--   only one element. After this step, any 'Add' or 'Mul' node will have at
 --   least two children.
 collapse :: (Algebra.Ring.C a) => Expr a -> Expr a
 collapse (Add [ ]) = Num 0
@@ -84,11 +85,23 @@ divnode (Mul xs) =
 divnode expr = expr
 
 ordered :: Ord a => Expr a -> Expr a
-ordered (Add xs)  = Add (sort xs)
-ordered (Mul xs)  = Mul (sort xs)
+ordered (Add xs)  = Add (ordered <$> sort xs)
+ordered (Mul xs)  = Mul (ordered <$> sort xs)
 ordered (Div a b) = Div (ordered a) (ordered b)
 ordered (Pow a n) = Pow (ordered a) n
 ordered expr      = expr
 
-canonical :: Expr a -> Expr a
-canonical = undefined
+groupSimilar :: (Ord a, Eq a) => [Expr a] -> [(Expr a, Int)]
+groupSimilar = foldr fn [] where
+    fn expr al =
+        case lookup expr al of
+          Just n  -> insert (expr, succ n) (filter ((/= expr) . fst) al)
+          Nothing -> insert (expr, 1) al
+
+-- canonical :: Expr a -> Expr a
+-- canonical (Add xs)  = undefined
+-- canonical (Mul xs)  = undefined
+-- canonical (Div a b) = undefined
+-- canonical (Pow a n) = undefined
+-- canonical (Num n)   = undefined
+-- canonical X         = X

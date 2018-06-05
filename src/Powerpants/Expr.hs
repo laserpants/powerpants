@@ -59,14 +59,20 @@ isDiv _ = False
 isPow (Pow _ _) = True
 isPow _ = False
 
+-- | Unwrap and return the value of an expression if it matches the 'Num'
+--   constructor.
 unwrapNum :: Expr a -> Maybe a
 unwrapNum (Num n) = Just n
 unwrapNum _ = Nothing
 
+-- | Unwrap and return the value of an expression if it matches the 'Add'
+--   constructor.
 unwrapAdd :: Expr a -> Maybe [Expr a]
 unwrapAdd (Add xs) = Just xs
 unwrapAdd _ = Nothing
 
+-- | Unwrap and return the value of an expression if it matches the 'Mul'
+--   constructor.
 unwrapMul :: Expr a -> Maybe [Expr a]
 unwrapMul (Mul xs) = Just xs
 unwrapMul _ = Nothing
