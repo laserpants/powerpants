@@ -1,22 +1,24 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE RebindableSyntax #-}
 module Powerpants.Expr
-  ( Expr(..)
-  , neg
-  , sub
-  , eval
-  -- * Predicates
-  , isX
-  , isNum
-  , isAdd
-  , isMul
-  , isDiv
-  , isPow
-  -- * Unwrappers
-  , unwrapNum
-  , unwrapAdd
-  , unwrapMul
-  ) where
+  where
+--  ( Expr(..)
+--  , neg
+--  , sub
+--  , eval
+--  -- * Predicates
+--  , isX
+--  , isNum
+--  , isAdd
+--  , isMul
+--  , isDiv
+--  , isPow
+--  -- * Unwrappers
+--  , unwrapNum
+--  , unwrapAdd
+--  , unwrapMul
+--  -- * Canonical form
+--  ) where
 
 import Algebra.Field
 import Algebra.Ring
@@ -24,10 +26,10 @@ import NumericPrelude
 
 -- | Data type representation of algebraic expressions in one variable.
 data Expr a
-  = X
-  -- ^ The variable /x/
-  | Num !a
+  = Num !a
   -- ^ A numeric value
+  | X
+  -- ^ The variable /x/
   | Add ![Expr a]
   -- ^ Addition node
   | Mul ![Expr a]
@@ -103,3 +105,24 @@ unwrapAdd _ = Nothing
 unwrapMul :: Expr a -> Maybe [Expr a]
 unwrapMul (Mul xs) = Just xs
 unwrapMul _ = Nothing
+
+normalized :: Algebra.Ring.C a => Expr a -> Expr a
+normalized (Add xs) = Add (fmap std xs) where
+    std X         = Mul [Num 1, X]
+    std (Add xs)  = Mul [Num 1, Add xs]
+    std (Mul xs)  = Mul xs
+    std (Div a b) = undefined
+    std (Pow a n) = Mul [Num 1, Pow a n]
+    std subex     = subex
+normalized (Mul xs)  = undefined
+normalized (Div a b) = Div (normalized a) (normalized b)
+normalized (Pow a n) = Pow (normalized a) n
+normalized expr      = expr
+
+expr1 :: Algebra.Ring.C a => Expr a
+expr1 = Add
+  [ Mul [Num 5, X]
+  , Div X (Num 10)
+  , Pow X 3
+  , Div (Mul [Num 2, Pow X 2]) (Num 3)
+  , Num 7 ]
