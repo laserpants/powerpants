@@ -19,28 +19,33 @@ collectNums = rec ([], []) where
                Num n -> (n:nums, xs')
                _     -> (nums, x:xs')
 
--- | Combine multiple constants under an addition or multiplication node by
---   adding or multiplying them into a single 'Num' value.
+-- | Combine constants under an addition or multiplication node by adding or
+--   multiplying them into a single 'Num' value. Repeated powers are eliminated
+--   and powers of constants are evaluated and replaced with the result, if it
+--   is less than 5000. The function calls itself recursively on child nodes.
 folded :: (Algebra.Ring.C a, Eq a, Ord a)
-         => Expr a
-         -> Expr a
+       => Expr a
+       -> Expr a
 folded (Mul xs) =
     let (nums, rest) = collectNums xs
       in case product nums of
         0 -> Num 0
-        1 -> Mul rest
-        n -> Mul (Num n:rest)
+        1 -> Mul (folded <$> rest)
+        n -> Mul (Num n:(folded <$> rest))
 folded (Add xs) =
     let (nums, rest) = collectNums xs
       in case sum nums of
-        0 -> Add rest
-        n -> Add (Num n:rest)
-folded (Pow (Num 0) n)      = Num 0
-folded (Pow a 0)            = Num 1
-folded (Pow a 1)            = a
-folded expr@(Pow (Num a) n) = let m = a^n in if m < 5000 then Num m else expr
-folded (Div a (Num 1))      = a
-folded expr                 = expr
+        0 -> Add (folded <$> rest)
+        n -> Add (Num n:(folded <$> rest))
+folded pow@(Pow (Num 0) 0) = pow -- To avoid having to think about 0^0
+folded (Pow (Num 0) n)     = Num 0
+folded (Pow a 0)           = Num 1
+folded (Pow a 1)           = folded a
+folded pow@(Pow (Num a) n) = let m = a^n in if m < 5000 then Num m else pow
+folded (Pow (Pow a m) n)   = Pow (folded a) (m*n)
+folded (Div a (Num 1))     = folded a
+folded (Div a b)           = Div (folded a) (folded b)
+folded expr                = expr
 
 -- | Replace empty addition and multiplication nodes with zero or one (i.e.,
 --   the operation's identity), and /pull out/ the expression from lists with
@@ -84,6 +89,8 @@ divnode (Mul xs) =
     rec ys (x:xs)         = rec (x:ys) xs
 divnode expr = expr
 
+-- | Return a /canonical/ representation of the node tree, ordered by the
+--   derived 'Ord' instance.
 ordered :: Ord a => Expr a -> Expr a
 ordered (Add xs)  = Add (ordered <$> sort xs)
 ordered (Mul xs)  = Mul (ordered <$> sort xs)
@@ -102,7 +109,7 @@ groupSimilar = foldr fn [] where
 combineUsing :: (Algebra.Ring.C a, Ord a) => ((Expr a, Int) -> Expr a) -> [Expr a] -> [Expr a]
 combineUsing fn xs = fmap (combined . fn) (groupSimilar xs)
 
--- | Collect and combine like expressions so that, for example...
+-- | Collect and combine like expressions.
 combined :: (Algebra.Ring.C a, Ord a, Eq a) => Expr a -> Expr a
 combined (Mul xs) = Mul (combineUsing fn xs) where
     fn (expr, 0)        = Num 1
