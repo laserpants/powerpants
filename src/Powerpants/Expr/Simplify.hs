@@ -7,8 +7,9 @@ import Data.List           ( sort )
 import NumericPrelude
 import Powerpants.Expr
 
--- | Partition a list of 'Expr's into two lists; one with all constant values
---   of the list, and another list with the remaining expressions.
+-- | Partition a list of 'Expr's into two lists; one with all constants (i.e.,
+--   values wrapped in 'Num' constructors), and another with the remaining 
+--   expressions.
 collectNums :: [Expr a] -> ([a], [Expr a])
 collectNums = rec ([], []) where
     rec p [] = p
@@ -17,8 +18,8 @@ collectNums = rec ([], []) where
                Num n -> (n:nums, xs')
                _     -> (nums, x:xs')
 
--- | Combine multiple constants which occur below an addition or multiplication
---   node by adding or multiplying them into a single 'Num' value.
+-- | Combine multiple constants under an addition or multiplication node by 
+--   adding or multiplying them into a single 'Num' value.
 foldnums :: (Algebra.Ring.C a, Eq a, Ord a)
          => Expr a
          -> Expr a
@@ -40,10 +41,10 @@ foldnums expr@(Pow (Num a) n) = let m = a^n in if m < 5000 then Num m else expr
 foldnums (Div a (Num 1))      = a
 foldnums expr                 = expr
 
--- | Replace empty addition and multiplication nodes with the identity element
---   of the operation (i.e., 0 for addition and 1 for multiplication), and
---   substitute the only element for lists with one single expression. After
---   this step, any 'Add' or 'Mul' node will have at least two children.
+-- | Replace empty addition and multiplication nodes with zero or one (i.e., 
+--   the operation's identity), and pull out the expression from lists with 
+--   only one element. After this step, any 'Add' or 'Mul' node will have at 
+--   least two children.
 collapse :: (Algebra.Ring.C a) => Expr a -> Expr a
 collapse (Add [ ]) = Num 0
 collapse (Add [x]) = x

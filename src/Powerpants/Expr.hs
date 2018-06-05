@@ -15,13 +15,15 @@ data Expr a
   | Pow !(Expr a) !Integer
   deriving (Show, Eq, Ord)
 
+-- | Negation: Return an 'Expr' representing the additive inverse of the input.
 neg :: Algebra.Ring.C a => Expr a -> Expr a
-neg (Num n) = Num (negate n)
 neg ex = Mul [Num (-1), ex]
 
+-- | Subtraction is just the negative of the second 'Expr' added to the first.
 sub :: Algebra.Ring.C a => Expr a -> Expr a-> Expr a
 sub a b = Add [a, neg b]
 
+-- | Evaluate an expression at the point 'x'.
 eval :: Algebra.Field.C a => a -> Expr a -> a
 eval x X         = x
 eval _ (Num n)   = n
