@@ -26,7 +26,7 @@ data Expr a
 neg :: Algebra.Ring.C a => Expr a -> Expr a
 neg ex = Mul [Num (-1), ex]
 
--- | Subtraction implemented as the negative of the r.h.s. 'Expr' added to the 
+-- | Subtraction implemented as the negative of the r.h.s. 'Expr' added to the
 --   l.h.s. value.
 --
 -- > sub a b = Add [a, neg b]
@@ -73,13 +73,13 @@ unwrapNum :: Expr a -> Maybe a
 unwrapNum (Num n) = Just n
 unwrapNum _ = Nothing
 
--- | Return the list of child expressions, if the value represents an 
+-- | Return the list of child expressions, if the value represents an
 --   addition node.
 unwrapAdd :: Expr a -> Maybe [Expr a]
 unwrapAdd (Add xs) = Just xs
 unwrapAdd _ = Nothing
 
--- | Return the list of child expressions, if the value represents an 
+-- | Return the list of child expressions, if the value represents an
 --   multiplication node.
 unwrapMul :: Expr a -> Maybe [Expr a]
 unwrapMul (Mul xs) = Just xs
