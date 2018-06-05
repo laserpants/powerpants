@@ -6,21 +6,30 @@ import Algebra.Field
 import Algebra.Ring
 import NumericPrelude
 
--- | Data type representation of algebraic expressions.
+-- | Data type representation of algebraic expressions in one variable.
 data Expr a
   = X
+  -- ^ The variable /x/
   | Num !a
+  -- ^ A numeric value
   | Add ![Expr a]
+  -- ^ Addition node
   | Mul ![Expr a]
+  -- ^ Multiplication node
   | Div !(Expr a) !(Expr a)
+  -- ^ The ratio of two expressions
   | Pow !(Expr a) !Integer
+  -- ^ A value raised to an integer power
   deriving (Show, Eq, Ord)
 
--- | Negation: Return an 'Expr' equal to the additive inverse of the input.
+-- | Return an 'Expr' equal to the additive inverse of the input.
 neg :: Algebra.Ring.C a => Expr a -> Expr a
 neg ex = Mul [Num (-1), ex]
 
--- | Subtraction is just the negative of the second 'Expr' added to the first.
+-- | Subtraction implemented as the negative of the r.h.s. 'Expr' added to the 
+--   l.h.s. value.
+--
+-- > sub a b = Add [a, neg b]
 sub :: Algebra.Ring.C a => Expr a -> Expr a-> Expr a
 sub a b = Add [a, neg b]
 
@@ -59,18 +68,19 @@ isDiv _ = False
 isPow (Pow _ _) = True
 isPow _ = False
 
--- | Unwrap and return the value of the expression, if it is a constant.
+-- | Return the value contained by the expression, if it is a constant.
 unwrapNum :: Expr a -> Maybe a
 unwrapNum (Num n) = Just n
 unwrapNum _ = Nothing
 
--- | Return the list of child expressions, if the value is an addition node.
+-- | Return the list of child expressions, if the value represents an 
+--   addition node.
 unwrapAdd :: Expr a -> Maybe [Expr a]
 unwrapAdd (Add xs) = Just xs
 unwrapAdd _ = Nothing
 
--- | Return the list of child expressions, if the value is an multiplication
---   node.
+-- | Return the list of child expressions, if the value represents an 
+--   multiplication node.
 unwrapMul :: Expr a -> Maybe [Expr a]
 unwrapMul (Mul xs) = Just xs
 unwrapMul _ = Nothing
