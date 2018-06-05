@@ -25,13 +25,13 @@ testFolded =
 testCollectNums :: SpecWith ()
 testCollectNums =
 
-    describe "collectNums" $
+    describe "collectConsts" $
       it "" $ do
 
-        collectNums [Num 4, X]
+        collectConsts [Num 4, X]
           `shouldBe` ([4], [X])
 
-        collectNums [Num 5, X, Mul [Num 3, Num 2], Num 2, X]
+        collectConsts [Num 5, X, Mul [Num 3, Num 2], Num 2, X]
           `shouldBe` ([5, 2], [X, Mul [Num 3, Num 2], X])
 
 testDivnode :: SpecWith ()

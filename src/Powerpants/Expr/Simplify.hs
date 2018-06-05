@@ -9,10 +9,10 @@ import NumericPrelude
 import Powerpants.Expr
 
 -- | Partition a list of 'Expr's into two lists; one with all constants (i.e.,
---   values wrapped in 'Num' constructors), and another with the remaining
---   expressions.
-collectNums :: [Expr a] -> ([a], [Expr a])
-collectNums = rec ([], []) where
+--   numeric values wrapped in 'Num' constructors), and another with the
+--   remaining expressions.
+collectConsts :: [Expr a] -> ([a], [Expr a])
+collectConsts = rec ([], []) where
     rec p [] = p
     rec (nums, xs') (x:xs) = rec p' xs where
         p' = case x of
@@ -27,13 +27,13 @@ folded :: (Algebra.Ring.C a, Eq a, Ord a)
        => Expr a
        -> Expr a
 folded (Mul xs) =
-    let (nums, rest) = collectNums xs
+    let (nums, rest) = collectConsts xs
       in case product nums of
         0 -> Num 0
         1 -> Mul (folded <$> rest)
         n -> Mul (Num n:(folded <$> rest))
 folded (Add xs) =
-    let (nums, rest) = collectNums xs
+    let (nums, rest) = collectConsts xs
       in case sum nums of
         0 -> Add (folded <$> rest)
         n -> Add (Num n:(folded <$> rest))
