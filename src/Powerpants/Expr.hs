@@ -1,6 +1,22 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE RebindableSyntax #-}
-module Powerpants.Expr where
+module Powerpants.Expr
+  ( Expr(..)
+  , neg
+  , sub
+  , eval
+  -- * Predicates
+  , isX
+  , isNum
+  , isAdd
+  , isMul
+  , isDiv
+  , isPow
+  -- * Unwrappers
+  , unwrapNum
+  , unwrapAdd
+  , unwrapMul
+  ) where
 
 import Algebra.Field
 import Algebra.Ring
@@ -34,6 +50,9 @@ sub :: Algebra.Ring.C a => Expr a -> Expr a-> Expr a
 sub a b = Add [a, neg b]
 
 -- | Evaluate an expression at the point /x/.
+--
+-- >>> eval 5 (Add [X, Num 3])
+-- 8.0
 eval :: Algebra.Field.C a => a -> Expr a -> a
 eval x X         = x
 eval _ (Num n)   = n
