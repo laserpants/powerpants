@@ -6,6 +6,7 @@ import Algebra.Field
 import Algebra.Ring
 import NumericPrelude
 
+-- | Data type representation of algebraic expressions.
 data Expr a
   = X
   | Num !a
@@ -15,7 +16,7 @@ data Expr a
   | Pow !(Expr a) !Integer
   deriving (Show, Eq, Ord)
 
--- | Negation: Return an 'Expr' representing the additive inverse of the input.
+-- | Negation: Return an 'Expr' equal to the additive inverse of the input.
 neg :: Algebra.Ring.C a => Expr a -> Expr a
 neg ex = Mul [Num (-1), ex]
 
@@ -23,7 +24,7 @@ neg ex = Mul [Num (-1), ex]
 sub :: Algebra.Ring.C a => Expr a -> Expr a-> Expr a
 sub a b = Add [a, neg b]
 
--- | Evaluate an expression at the point 'x'.
+-- | Evaluate an expression at the point /x/.
 eval :: Algebra.Field.C a => a -> Expr a -> a
 eval x X         = x
 eval _ (Num n)   = n
@@ -34,32 +35,38 @@ eval x (Pow a n) = eval x a^n
 
 isX, isAdd, isMul, isDiv, isPow :: Expr a -> Bool
 
+-- | Predicate to test if a value matches the 'X' constructor.
 isX X = True
 isX _ = False
 
+-- | Predicate to test if a value matches the 'Num' constructor.
 isNum (Num _) = True
 isNum _ = False
 
+-- | Predicate to test if a value matches the 'Add' constructor.
 isAdd (Add _) = True
 isAdd _ = False
 
+-- | Predicate to test if a value matches the 'Mul' constructor.
 isMul (Mul _) = True
 isMul _ = False
 
+-- | Predicate to test if a value matches the 'Div' constructor.
 isDiv (Div _ _) = True
 isDiv _ = False
 
+-- | Predicate to test if a value matches the 'Pow' constructor.
 isPow (Pow _ _) = True
 isPow _ = False
 
-maybeNum :: Expr a -> Maybe a
-maybeNum (Num n) = Just n
-maybeNum _ = Nothing
+unwrapNum :: Expr a -> Maybe a
+unwrapNum (Num n) = Just n
+unwrapNum _ = Nothing
 
-maybeAdd :: Expr a -> Maybe [Expr a]
-maybeAdd (Add xs) = Just xs
-maybeAdd _ = Nothing
+unwrapAdd :: Expr a -> Maybe [Expr a]
+unwrapAdd (Add xs) = Just xs
+unwrapAdd _ = Nothing
 
-maybeMul :: Expr a -> Maybe [Expr a]
-maybeMul (Mul xs) = Just xs
-maybeMul _ = Nothing
+unwrapMul :: Expr a -> Maybe [Expr a]
+unwrapMul (Mul xs) = Just xs
+unwrapMul _ = Nothing

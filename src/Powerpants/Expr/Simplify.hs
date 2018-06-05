@@ -42,7 +42,7 @@ foldnums (Div a (Num 1))      = a
 foldnums expr                 = expr
 
 -- | Replace empty addition and multiplication nodes with zero or one (i.e., 
---   the operation's identity), and pull out the expression from lists with 
+--   the operation's identity), and /pull out/ the expression from lists with 
 --   only one element. After this step, any 'Add' or 'Mul' node will have at 
 --   least two children.
 collapse :: (Algebra.Ring.C a) => Expr a -> Expr a
@@ -52,12 +52,12 @@ collapse (Mul [ ]) = Num 1
 collapse (Mul [x]) = x
 collapse expr      = expr
 
--- | Flatten nested addition and multiplication nodes.
+-- | Flatten (or /level/) nested addition and multiplication nodes.
 flatten :: Expr a -> Expr a
 flatten expr =
     case expr of
-      Mul xs -> Mul (level maybeMul xs)
-      Add xs -> Add (level maybeAdd xs)
+      Mul xs -> Mul (level unwrapMul xs)
+      Add xs -> Add (level unwrapAdd xs)
       _      -> expr
   where
     level :: (a -> Maybe [a]) -> [a] -> [a]
@@ -69,7 +69,7 @@ flatten expr =
               Nothing -> ex:exs'
 
 -- | Transform the syntax tree so that a division node cannot be the immediate
---   child of either a division node or a multiplication node.
+--   child of a division node or a multiplication node.
 divnode :: Expr a -> Expr a
 divnode (Div (Div a b) c) = Div a (Mul [b, c])
 divnode (Div a (Div b c)) = Div (Mul [a, c]) b
