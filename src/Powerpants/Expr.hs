@@ -69,7 +69,7 @@ unwrapAdd :: Expr a -> Maybe [Expr a]
 unwrapAdd (Add xs) = Just xs
 unwrapAdd _ = Nothing
 
--- | Return the list of child expressions, if the value is an multiplication 
+-- | Return the list of child expressions, if the value is an multiplication
 --   node.
 unwrapMul :: Expr a -> Maybe [Expr a]
 unwrapMul (Mul xs) = Just xs
