@@ -1,7 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE RebindableSyntax #-}
 module Powerpants.Expr.Simplify where
---  -- * Canonical form
 
 import Algebra.Ring
 import Data.List           ( sort )
@@ -46,27 +45,40 @@ applyId (Mul [x]) = x
 applyId expr      = expr
 
 normalOrder :: (Algebra.Ring.C a, Ord a) => [Expr a] -> [Expr a]
-normalOrder = sort . fmap normalized
+normalOrder = sort . fmap combined
 
 -- | Combine constants under an addition or multiplication node by adding or
 --   multiplying them into a single 'Num' value.
-normalized :: (Algebra.Ring.C a, Ord a) => Expr a -> Expr a
-normalized (Add xs) = applyId (Add (normalOrder exprs)) where
+combined :: (Algebra.Ring.C a, Ord a) => Expr a -> Expr a
+combined (Add xs) = applyId (Add (normalOrder exprs)) where
     (nums, rest) = collectConsts xs
     exprs = case sum nums of
               0 -> rest
               n -> Num n:rest
-normalized (Mul xs) = applyId (Mul (normalOrder exprs)) where
+combined (Mul xs) = applyId (Mul (normalOrder exprs)) where
     (nums, rest) = collectConsts xs
     exprs = case product nums of
               0 -> []
               1 -> rest
               n -> Num n:rest
-normalized (Pow a n) = Pow (normalized a) n
-normalized expr = expr
+combined (Pow a n) = Pow (combined a) n
+combined expr = expr
+
+-- | Eliminate repeated powers and evaluate powers of constants if the result
+--   is less than 5000.
+levelled :: (Algebra.Ring.C a, Ord a) => Expr a -> Expr a
+levelled pow@(Pow (Num 0) 0) = pow -- To avoid having to think about 0^0
+levelled (Pow (Num 0) n)     = Num 0
+levelled (Pow a 0)           = Num 1
+levelled (Pow a 1)           = levelled a
+levelled pow@(Pow (Num a) n) = let m = a^n in if m < 5000 then Num m else pow
+levelled (Pow (Pow a m) n)   = Pow (levelled a) (m*n)
+levelled expr                = expr
+
+-- collectMatching = undefined
 
 simplified :: (Algebra.Ring.C a, Ord a) => Expr a -> Expr a
-simplified = normalized . flattened
+simplified = combined . levelled . flattened
 
 expr1 :: Algebra.Ring.C a => Expr a
 expr1 = Add
@@ -76,75 +88,6 @@ expr1 = Add
   --, Div (Mul [Num 2, Pow X 2]) (Num 3)
   , Num 7 ]
 
--- -- | Combine constants under an addition or multiplication node by adding or
--- --   multiplying them into a single 'Num' value. Repeated powers are eliminated
--- --   and powers of constants are evaluated and replaced with the result, if it
--- --   is less than 5000. The function calls itself recursively on child nodes.
--- folded :: (Algebra.Ring.C a, Eq a, Ord a)
---        => Expr a
---        -> Expr a
--- folded (Mul xs) =
---     let (nums, rest) = collectConsts xs
---       in case product nums of
---         0 -> Num 0
---         1 -> Mul (folded <$> rest)
---         n -> Mul (Num n:(folded <$> rest))
--- folded (Add xs) =
---     let (nums, rest) = collectConsts xs
---       in case sum nums of
---         0 -> Add (folded <$> rest)
---         n -> Add (Num n:(folded <$> rest))
--- folded pow@(Pow (Num 0) 0) = pow -- To avoid having to think about 0^0
--- folded (Pow (Num 0) n)     = Num 0
--- folded (Pow a 0)           = Num 1
--- folded (Pow a 1)           = folded a
--- folded pow@(Pow (Num a) n) = let m = a^n in if m < 5000 then Num m else pow
--- folded (Pow (Pow a m) n)   = Pow (folded a) (m*n)
--- folded (Div a (Num 1))     = folded a
--- folded (Div a b)           = Div (folded a) (folded b)
--- folded expr                = expr
---
---
--- -- | Flatten (or /level/) nested addition and multiplication nodes.
--- flattened :: Expr a -> Expr a
--- flattened expr =
---     case expr of
---       Mul xs -> Mul (level unwrapMul xs)
---       Add xs -> Add (level unwrapAdd xs)
---       _      -> expr
---   where
---     level :: (a -> Maybe [a]) -> [a] -> [a]
---     level fn = rec [] where
---         rec exs' [] = exs'
---         rec exs' (ex:exs) = rec res exs where
---             res = case fn ex of
---               Just xs -> xs ++ exs'
---               Nothing -> ex:exs'
---
--- -- | Transform the syntax tree so that a division node cannot be the immediate
--- --   child of a division node or a multiplication node.
--- divnode :: Expr a -> Expr a
--- divnode (Div (Div a b) c) = Div a (Mul [b, c])
--- divnode (Div a (Div b c)) = Div (Mul [a, c]) b
--- divnode (Mul xs) =
---     case rec [] xs of
---       (lhs, Div a b:rhs) -> let xs' = lhs ++ a:rhs in Div (divnode (Mul xs')) b
---       _                  -> Mul xs
---   where
---     rec ys []             = (reverse ys, [])
---     rec ys xs@(Div {}:_)  = (reverse ys, xs)
---     rec ys (x:xs)         = rec (x:ys) xs
--- divnode expr = expr
---
--- -- | Return a /canonical/ representation of the node tree, ordered by the
--- --   derived 'Ord' instance.
--- ordered :: Ord a => Expr a -> Expr a
--- ordered (Add xs)  = Add (ordered <$> sort xs)
--- ordered (Mul xs)  = Mul (ordered <$> sort xs)
--- ordered (Div a b) = Div (ordered a) (ordered b)
--- ordered (Pow a n) = Pow (ordered a) n
--- ordered expr      = expr
---
 -- groupSimilar :: (Ord a, Eq a) => [Expr a] -> [(Expr a, Int)]
 -- groupSimilar = foldr fn [] where
 --     fn (Num n) al = (Num n, 1):al  -- Leave constants to be folded later
