@@ -11,7 +11,6 @@ module Powerpants.Expr
 --  , isNum
 --  , isAdd
 --  , isMul
---  , isDiv
 --  , isPow
 --  -- * Unwrappers
 --  , unwrapNum
@@ -34,8 +33,6 @@ data Expr a
   -- ^ Addition node
   | Mul ![Expr a]
   -- ^ Multiplication node
-  | Div !(Expr a) !(Expr a)
-  -- ^ The ratio of two expressions
   | Pow !(Expr a) !Integer
   -- ^ A value raised to an integer power
   deriving (Show, Eq, Ord)
@@ -60,10 +57,9 @@ eval x X         = x
 eval _ (Num n)   = n
 eval x (Add xs)  = sum (fmap (eval x) xs)
 eval x (Mul xs)  = product (fmap (eval x) xs)
-eval x (Div a b) = eval x a / eval x b
 eval x (Pow a n) = eval x a^n
 
-isX, isAdd, isMul, isDiv, isPow :: Expr a -> Bool
+isX, isAdd, isMul, isPow :: Expr a -> Bool
 
 -- | Predicate to test if a value matches the 'X' constructor.
 isX X = True
@@ -80,10 +76,6 @@ isAdd _ = False
 -- | Predicate to test if a value matches the 'Mul' constructor.
 isMul (Mul _) = True
 isMul _ = False
-
--- | Predicate to test if a value matches the 'Div' constructor.
-isDiv (Div _ _) = True
-isDiv _ = False
 
 -- | Predicate to test if a value matches the 'Pow' constructor.
 isPow (Pow _ _) = True
@@ -106,23 +98,23 @@ unwrapMul :: Expr a -> Maybe [Expr a]
 unwrapMul (Mul xs) = Just xs
 unwrapMul _ = Nothing
 
-normalized :: Algebra.Ring.C a => Expr a -> Expr a
-normalized (Add xs) = Add (fmap std xs) where
-    std X         = Mul [Num 1, X]
-    std (Add xs)  = Mul [Num 1, Add xs]
-    std (Mul xs)  = Mul xs
-    std (Div a b) = undefined
-    std (Pow a n) = Mul [Num 1, Pow a n]
-    std subex     = subex
-normalized (Mul xs)  = undefined
-normalized (Div a b) = Div (normalized a) (normalized b)
-normalized (Pow a n) = Pow (normalized a) n
-normalized expr      = expr
+--normalized :: Algebra.Ring.C a => Expr a -> Expr a
+--normalized (Add xs) = Add (fmap std xs) where
+--    std X         = Mul [Num 1, X]
+--    std (Add xs)  = Mul [Num 1, Add xs]
+--    std (Mul xs)  = Mul xs
+--    std (Div a b) = undefined
+--    std (Pow a n) = Mul [Num 1, Pow a n]
+--    std subex     = subex
+--normalized (Mul xs)  = undefined
+--normalized (Div a b) = Div (normalized a) (normalized b)
+--normalized (Pow a n) = Pow (normalized a) n
+--normalized expr      = expr
 
 expr1 :: Algebra.Ring.C a => Expr a
 expr1 = Add
   [ Mul [Num 5, X]
-  , Div X (Num 10)
+  , Pow X (-10)
   , Pow X 3
-  , Div (Mul [Num 2, Pow X 2]) (Num 3)
+  --, Div (Mul [Num 2, Pow X 2]) (Num 3)
   , Num 7 ]
