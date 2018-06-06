@@ -65,6 +65,9 @@ normalized (Mul xs) = applyId (Mul (normalOrder exprs)) where
 normalized (Pow a n) = Pow (normalized a) n
 normalized expr = expr
 
+simplified :: (Algebra.Ring.C a, Ord a) => Expr a -> Expr a
+simplified = normalized . flattened
+
 expr1 :: Algebra.Ring.C a => Expr a
 expr1 = Add
   [ Mul [Num 5, X]
