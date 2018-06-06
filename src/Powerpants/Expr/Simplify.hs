@@ -1,12 +1,74 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE RebindableSyntax #-}
 module Powerpants.Expr.Simplify where
+--  -- * Canonical form
 
 import Algebra.Ring
-import Data.Functor        ( (<$>) )
 import Data.List           ( sort, insert )
 import NumericPrelude
 import Powerpants.Expr
+
+-- | Recursively flatten (or /level/) nested addition and multiplication nodes.
+flattened :: Expr a -> Expr a
+flattened expr =
+    case expr of
+      Mul xs -> Mul (level unwrapMul xs)
+      Add xs -> Add (level unwrapAdd xs)
+      _      -> expr
+  where
+    level :: (Expr a -> Maybe [Expr a]) -> [Expr a] -> [Expr a]
+    level fn = rec [] where
+        rec exs' [] = exs'
+        rec exs' (ex:exs) = rec res exs where
+            res = case fn (flattened ex) of
+              Just xs -> xs ++ exs'
+              Nothing -> ex:exs'
+
+-- | Partition a list of 'Expr's into two lists; one with all constants (i.e.,
+--   numeric values wrapped in 'Num' constructors), and another with the
+--   remaining expressions.
+collectConsts :: [Expr a] -> ([a], [Expr a])
+collectConsts = rec ([], []) where
+    rec p [] = p
+    rec (nums, xs') (x:xs) = rec p' xs where
+        p' = case x of
+               Num n -> (n:nums, xs')
+               _     -> (nums, x:xs')
+
+applyId :: (Algebra.Ring.C a) => Expr a -> Expr a
+applyId (Add [ ]) = Num 0
+applyId (Add [x]) = x
+applyId (Mul [ ]) = Num 1
+applyId (Mul [x]) = x
+applyId expr      = expr
+
+normalOrder :: (Algebra.Ring.C a, Ord a) => [Expr a] -> [Expr a]
+normalOrder = sort . fmap normalized
+
+-- | Combine constants under an addition or multiplication node by adding or
+--   multiplying them into a single 'Num' value. 
+normalized :: (Algebra.Ring.C a, Ord a) => Expr a -> Expr a
+normalized (Add xs) = applyId (Add (normalOrder exprs)) where
+    (nums, rest) = collectConsts xs
+    exprs = case sum nums of
+              0 -> rest
+              n -> Num n:rest
+normalized (Mul xs) = applyId (Mul (normalOrder exprs)) where 
+    (nums, rest) = collectConsts xs
+    exprs = case product nums of
+              0 -> []
+              1 -> rest
+              n -> Num n:rest
+normalized (Pow a n) = Pow (normalized a) n
+normalized expr = expr
+
+expr1 :: Algebra.Ring.C a => Expr a
+expr1 = Add
+  [ Mul [Num 5, X]
+  , Pow X (-10)
+  , Pow X 3
+  --, Div (Mul [Num 2, Pow X 2]) (Num 3)
+  , Num 7 ]
 
 -- -- | Partition a list of 'Expr's into two lists; one with all constants (i.e.,
 -- --   numeric values wrapped in 'Num' constructors), and another with the
