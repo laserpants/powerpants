@@ -66,19 +66,19 @@ combined expr = expr
 
 -- | Eliminate repeated powers and evaluate powers of constants if the result
 --   is less than 5000.
-levelled :: (Algebra.Ring.C a, Ord a) => Expr a -> Expr a
-levelled pow@(Pow (Num 0) 0) = pow -- To avoid having to think about 0^0
-levelled (Pow (Num 0) n)     = Num 0
-levelled (Pow a 0)           = Num 1
-levelled (Pow a 1)           = levelled a
-levelled pow@(Pow (Num a) n) = let m = a^n in if m < 5000 then Num m else pow
-levelled (Pow (Pow a m) n)   = Pow (levelled a) (m*n)
-levelled expr                = expr
+compressed :: (Algebra.Ring.C a, Ord a) => Expr a -> Expr a
+compressed pow@(Pow (Num 0) 0) = pow -- To avoid having to think about 0^0
+compressed (Pow (Num 0) n)     = Num 0
+compressed (Pow a 0)           = Num 1
+compressed (Pow a 1)           = compressed a
+compressed pow@(Pow (Num a) n) = let m = a^n in if m < 5000 then Num m else pow
+compressed (Pow (Pow a m) n)   = Pow (compressed a) (m*n)
+compressed expr                = expr
 
 -- collectMatching = undefined
 
 simplified :: (Algebra.Ring.C a, Ord a) => Expr a -> Expr a
-simplified = combined . levelled . flattened
+simplified = combined . compressed . flattened
 
 expr1 :: Algebra.Ring.C a => Expr a
 expr1 = Add
