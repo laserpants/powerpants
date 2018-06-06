@@ -4,7 +4,7 @@ module Powerpants.Expr.Simplify where
 --  -- * Canonical form
 
 import Algebra.Ring
-import Data.List           ( sort, insert )
+import Data.List           ( sort )
 import NumericPrelude
 import Powerpants.Expr
 
@@ -35,6 +35,9 @@ collectConsts = rec ([], []) where
                Num n -> (n:nums, xs')
                _     -> (nums, x:xs')
 
+-- | Replace empty addition and multiplication nodes with zero or one (the
+--   operation's identity), and extract the expression from lists with only one
+--   element.
 applyId :: (Algebra.Ring.C a) => Expr a -> Expr a
 applyId (Add [ ]) = Num 0
 applyId (Add [x]) = x
@@ -46,14 +49,14 @@ normalOrder :: (Algebra.Ring.C a, Ord a) => [Expr a] -> [Expr a]
 normalOrder = sort . fmap normalized
 
 -- | Combine constants under an addition or multiplication node by adding or
---   multiplying them into a single 'Num' value. 
+--   multiplying them into a single 'Num' value.
 normalized :: (Algebra.Ring.C a, Ord a) => Expr a -> Expr a
 normalized (Add xs) = applyId (Add (normalOrder exprs)) where
     (nums, rest) = collectConsts xs
     exprs = case sum nums of
               0 -> rest
               n -> Num n:rest
-normalized (Mul xs) = applyId (Mul (normalOrder exprs)) where 
+normalized (Mul xs) = applyId (Mul (normalOrder exprs)) where
     (nums, rest) = collectConsts xs
     exprs = case product nums of
               0 -> []
@@ -70,17 +73,6 @@ expr1 = Add
   --, Div (Mul [Num 2, Pow X 2]) (Num 3)
   , Num 7 ]
 
--- -- | Partition a list of 'Expr's into two lists; one with all constants (i.e.,
--- --   numeric values wrapped in 'Num' constructors), and another with the
--- --   remaining expressions.
--- collectConsts :: [Expr a] -> ([a], [Expr a])
--- collectConsts = rec ([], []) where
---     rec p [] = p
---     rec (nums, xs') (x:xs) = rec p' xs where
---         p' = case x of
---                Num n -> (n:nums, xs')
---                _     -> (nums, x:xs')
--- 
 -- -- | Combine constants under an addition or multiplication node by adding or
 -- --   multiplying them into a single 'Num' value. Repeated powers are eliminated
 -- --   and powers of constants are evaluated and replaced with the result, if it
@@ -108,18 +100,8 @@ expr1 = Add
 -- folded (Div a (Num 1))     = folded a
 -- folded (Div a b)           = Div (folded a) (folded b)
 -- folded expr                = expr
--- 
--- -- | Replace empty addition and multiplication nodes with zero or one (i.e.,
--- --   the operation's identity), and /pull out/ the expression from lists with
--- --   only one element. After this step, any 'Add' or 'Mul' node will have at
--- --   least two children.
--- collapsed :: (Algebra.Ring.C a) => Expr a -> Expr a
--- collapsed (Add [ ]) = Num 0
--- collapsed (Add [x]) = x
--- collapsed (Mul [ ]) = Num 1
--- collapsed (Mul [x]) = x
--- collapsed expr      = expr
--- 
+--
+--
 -- -- | Flatten (or /level/) nested addition and multiplication nodes.
 -- flattened :: Expr a -> Expr a
 -- flattened expr =
@@ -135,7 +117,7 @@ expr1 = Add
 --             res = case fn ex of
 --               Just xs -> xs ++ exs'
 --               Nothing -> ex:exs'
--- 
+--
 -- -- | Transform the syntax tree so that a division node cannot be the immediate
 -- --   child of a division node or a multiplication node.
 -- divnode :: Expr a -> Expr a
@@ -150,7 +132,7 @@ expr1 = Add
 --     rec ys xs@(Div {}:_)  = (reverse ys, xs)
 --     rec ys (x:xs)         = rec (x:ys) xs
 -- divnode expr = expr
--- 
+--
 -- -- | Return a /canonical/ representation of the node tree, ordered by the
 -- --   derived 'Ord' instance.
 -- ordered :: Ord a => Expr a -> Expr a
@@ -159,7 +141,7 @@ expr1 = Add
 -- ordered (Div a b) = Div (ordered a) (ordered b)
 -- ordered (Pow a n) = Pow (ordered a) n
 -- ordered expr      = expr
--- 
+--
 -- groupSimilar :: (Ord a, Eq a) => [Expr a] -> [(Expr a, Int)]
 -- groupSimilar = foldr fn [] where
 --     fn (Num n) al = (Num n, 1):al  -- Leave constants to be folded later
@@ -167,10 +149,10 @@ expr1 = Add
 --         case lookup expr al of
 --           Just n  -> insert (expr, succ n) (filter ((/= expr) . fst) al)
 --           Nothing -> insert (expr, 1) al
--- 
+--
 -- combineUsing :: (Algebra.Ring.C a, Ord a) => ((Expr a, Int) -> Expr a) -> [Expr a] -> [Expr a]
 -- combineUsing fn xs = fmap (combined . fn) (groupSimilar xs)
--- 
+--
 -- -- | Collect and combine like expressions.
 -- combined :: (Algebra.Ring.C a, Ord a, Eq a) => Expr a -> Expr a
 -- combined (Mul xs) = Mul (combineUsing fn xs) where
@@ -183,11 +165,11 @@ expr1 = Add
 --     fn (expr, 1)        = expr
 --     fn (expr, count)    = Mul [Num (fromIntegral count), expr]
 -- combined expr = expr
--- 
+--
 -- -- combined (Mul [Pow X 3, Pow X 5, X, X])  <-->  x^3 * x^5 * x * x
--- 
+--
 -- -- combined (Add [Pow X 3, Pow X 5, X, X])  <-->  x^3 + x^5 + x + x
--- 
+--
 -- -- combined (Add [Mul [Num 5, X], Mul [Num 3, X], X])  <-->  5*x + 3*x + x
--- 
+--
 -- -- combined (Mul [X, X, X, X, X, Mul [Num 5, X]])
