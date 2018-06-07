@@ -34,8 +34,32 @@ import Test.Hspec
 --        collectConsts [Num 5, X, Mul [Num 3, Num 2], Num 2, X]
 --          `shouldBe` ([5, 2], [X, Mul [Num 3, Num 2], X])
 
+expr_0 :: Expr Double
+expr_0 = Add [Mul [Num 0,Mul [Pow (Add [Num 1,Mul [Num (-1),X]]) (-1)]],Mul [Num 1,Mul [Num (-1),Pow (Add [Num 1,Mul [Num (-1),X]]) (-2),Add [Num 0,Add [Mul [Num 0,Mul [X]],Mul [Num (-1),Num 1]]]]]]
+
+test1 :: SpecWith ()
+test1 = do
+
+    describe "combined" $
+      it "shouldn't change the meaning of the expression" $
+
+        eval 3 expr_0 `shouldBe` eval 3 (combined expr_0)
+
+    describe "compressed" $
+      it "shouldn't change the meaning of the expression" $
+
+        eval 3 expr_0 `shouldBe` eval 3 (compressed expr_0)
+
+    describe "flattened" $
+      it "shouldn't change the meaning of the expression" $
+
+        eval 3 expr_0 `shouldBe` eval 3 (flattened expr_0)
+
+
+
 main :: IO ()
-main = pure () -- hspec $ do
+main = hspec $ do
+    test1
 --    testFlattened
 --    testFolded
 --    testCollectNums
