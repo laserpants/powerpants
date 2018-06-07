@@ -37,7 +37,7 @@ collectConsts = rec ([], []) where
                _     -> (nums, x:xs')
 
 -- | Replace empty addition and multiplication nodes with zero or one (the
---   operation's identity), and extract the expression from lists with only one
+--   operation's identity). Extract the expression from lists with only one
 --   element.
 applyId :: (Algebra.Ring.C a) => Expr a -> Expr a
 applyId (Add [ ]) = Num 0
@@ -78,10 +78,10 @@ type AssocList k v = [(k, v)]
 
 increment :: (Ord a)
           => Expr a
-          -> AssocList (Expr a) Int
           -> Int
           -> AssocList (Expr a) Int
-increment expr al m =
+          -> AssocList (Expr a) Int
+increment expr m al =
     case lookup expr al of
       Just n  -> insert (expr, n + m) (filter ((/= expr) . fst) al)
       Nothing -> insert (expr, m) al
@@ -93,17 +93,17 @@ collectTerms = foldr fn [] where
     fn (Num n)  al = (Num n, 1) : al  -- Constants are folded later
     fn (Mul xs) al =
         case sort xs of
-          (Num n:xs) -> increment (Mul xs) al (fromIntegral n)
-          xs'        -> increment (Mul xs') al 1
-    fn expr al = increment expr al 1
+          (Num n:xs) -> increment (Mul xs) (fromIntegral n) al
+          xs'        -> increment (Mul xs') 1 al
+    fn expr al = increment expr 1 al
 
 collectAlike :: (Algebra.ToInteger.C a, Algebra.Ring.C a, Ord a)
              => [Expr a]
              -> AssocList (Expr a) Int
 collectAlike = foldr fn [] where
     fn (Num n)   al = (Num n, 1) : al  -- Constants are folded later
-    fn (Pow a n) al = increment a al (fromIntegral n)
-    fn expr      al = increment expr al 1
+    fn (Pow a n) al = increment a (fromIntegral n) al
+    fn expr      al = increment expr 1 al
 
 abc :: (Algebra.ToInteger.C a, Algebra.Ring.C a, Ord a) => Expr a -> Expr a
 abc (Add xs) = Add (expand <$> collectTerms xs) where

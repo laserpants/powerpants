@@ -23,16 +23,11 @@ import NumericPrelude
 
 -- | Data type representation of algebraic expressions in one variable.
 data Expr a
-  = Num !a
-  -- ^ A numeric value
-  | X
-  -- ^ The variable /x/
-  | Add ![Expr a]
-  -- ^ Addition node
-  | Mul ![Expr a]
-  -- ^ Multiplication node
-  | Pow !(Expr a) !Integer
-  -- ^ A value raised to an integer power
+  = Num !a                  -- ^ A numeric value
+  | X                       -- ^ The variable /x/
+  | Add ![Expr a]           -- ^ Addition node
+  | Mul ![Expr a]           -- ^ Multiplication node
+  | Pow !(Expr a) !Integer  -- ^ A value raised to an integer power
   deriving (Show, Eq, Ord)
 
 -- | Return an 'Expr' equal to the additive inverse of the input.
@@ -57,12 +52,12 @@ div a b = Mul [a, Pow b (-1)]
 --
 -- >>> eval 5 (Add [X, Num 3])
 -- 8.0
-eval :: Algebra.Field.C a => a -> Expr a -> a
+eval :: Double -> Expr Double -> Double
 eval x X         = x
 eval _ (Num n)   = n
 eval x (Add xs)  = sum (fmap (eval x) xs)
 eval x (Mul xs)  = product (fmap (eval x) xs)
-eval x (Pow a n) = eval x a^n
+eval x (Pow a n) = eval x a**fromIntegral n
 
 isX, isAdd, isMul, isPow :: Expr a -> Bool
 
