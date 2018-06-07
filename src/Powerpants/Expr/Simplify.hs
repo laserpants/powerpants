@@ -3,7 +3,8 @@
 module Powerpants.Expr.Simplify where
 
 import Algebra.Ring
-import Data.List           ( sort )
+import Algebra.ToInteger
+import Data.List           ( sort, insert )
 import NumericPrelude
 import Powerpants.Expr
 
@@ -24,8 +25,8 @@ flattened expr =
               Nothing -> ex:exs'
 
 -- | Partition a list of 'Expr's into two lists; one with all constants (i.e.,
---   numeric values wrapped in 'Num' constructors), and another with the
---   remaining expressions.
+--   numeric values wrapped in 'Num' constructors), and another with remaining
+--   expressions.
 collectConsts :: [Expr a] -> ([a], [Expr a])
 collectConsts = rec ([], []) where
     rec p [] = p
@@ -44,18 +45,15 @@ applyId (Mul [ ]) = Num 1
 applyId (Mul [x]) = x
 applyId expr      = expr
 
-normalOrder :: (Algebra.Ring.C a, Ord a) => [Expr a] -> [Expr a]
-normalOrder = sort . fmap combined
-
 -- | Combine constants under an addition or multiplication node by adding or
 --   multiplying them into a single 'Num' value.
 combined :: (Algebra.Ring.C a, Ord a) => Expr a -> Expr a
-combined (Add xs) = applyId (Add (normalOrder exprs)) where
+combined (Add xs) = applyId (Add (fmap combined exprs)) where
     (nums, rest) = collectConsts xs
     exprs = case sum nums of
               0 -> rest
               n -> Num n:rest
-combined (Mul xs) = applyId (Mul (normalOrder exprs)) where
+combined (Mul xs) = applyId (Mul (fmap combined exprs)) where
     (nums, rest) = collectConsts xs
     exprs = case product nums of
               0 -> []
@@ -75,11 +73,43 @@ compressed pow@(Pow (Num a) n) = let m = a^n in if m < 5000 then Num m else pow
 compressed (Pow (Pow a m) n)   = Pow (compressed a) (m*n)
 compressed expr                = expr
 
--- collectMatching = undefined
+type AssocList k v = [(k, v)]
+
+collectTerms :: (Algebra.ToInteger.C a, Algebra.Ring.C a, Ord a)
+             => [Expr a]
+             -> AssocList (Expr a) Int
+collectTerms = foldr fn [] where
+    fn (Num n)  al = (Num n, 1):al -- Constants are folded later
+    fn (Mul xs) al =
+        case sort xs of
+          (Num n:xs) -> increment (Mul xs) al (fromIntegral n)
+          xs'        -> increment (Mul xs') al 1
+    fn expr al = increment expr al 1
+
+increment :: (Ord a) => Expr a -> AssocList (Expr a) Int -> Int -> [(Expr a, Int)]
+increment expr al c =
+    case lookup expr al of
+      Just n  -> insert (expr, n + c) (filter ((/= expr) . fst) al)
+      Nothing -> insert (expr, c) al
+
+collectAlike :: [Expr a] -> [(Expr a, Int)]
+collectAlike exprs = undefined where
+    fn _ al = undefined
 
 simplified :: (Algebra.Ring.C a, Ord a) => Expr a -> Expr a
 simplified = combined . compressed . flattened
 
+-- 5(x + 3) + x^(-10) + x^3 + 7 + (x + 2)(x + 3)
+-- [(x + 3, 5), (x^(-10), 1), (x^3, 1), (7, 1)]
+expr2 :: Algebra.Ring.C a => Expr a
+expr2 = Add
+  [ Mul [Num 5, Add [X, Num 3]]
+  , Pow X (-10)
+  , Pow X 3
+  , Num 7
+  , Mul [Add [X, Num 2], Add [X, Num 3]] ]
+
+-- 5x + x^(-10) + x^3 + 7
 expr1 :: Algebra.Ring.C a => Expr a
 expr1 = Add
   [ Mul [Num 5, X]
@@ -88,13 +118,13 @@ expr1 = Add
   --, Div (Mul [Num 2, Pow X 2]) (Num 3)
   , Num 7 ]
 
--- groupSimilar :: (Ord a, Eq a) => [Expr a] -> [(Expr a, Int)]
--- groupSimilar = foldr fn [] where
---     fn (Num n) al = (Num n, 1):al  -- Leave constants to be folded later
---     fn expr al =
---         case lookup expr al of
---           Just n  -> insert (expr, succ n) (filter ((/= expr) . fst) al)
---           Nothing -> insert (expr, 1) al
+--groupSimilar :: (Ord a, Eq a) => [Expr a] -> [(Expr a, Int)]
+--groupSimilar = foldr fn [] where
+--    fn (Num n) al = (Num n, 1):al  -- Leave constants to be folded later
+--    fn expr al =
+--        case lookup expr al of
+--          Just n  -> insert (expr, succ n) (filter ((/= expr) . fst) al)
+--          Nothing -> insert (expr, 1) al
 --
 -- combineUsing :: (Algebra.Ring.C a, Ord a) => ((Expr a, Int) -> Expr a) -> [Expr a] -> [Expr a]
 -- combineUsing fn xs = fmap (combined . fn) (groupSimilar xs)
