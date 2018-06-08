@@ -57,7 +57,7 @@ combined (Add xs) = applyId (Add (fmap combined exprs)) where
 combined (Mul xs) = applyId (Mul (fmap combined exprs)) where
     (nums, rest) = collectConsts xs
     exprs = case product nums of
-              0 -> []
+              0 -> [Num 0]
               1 -> rest
               n -> Num n:rest
 combined (Pow a n) = Pow (combined a) n
