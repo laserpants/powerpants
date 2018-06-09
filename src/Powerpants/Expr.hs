@@ -19,6 +19,7 @@ module Powerpants.Expr
 
 import Algebra.Field
 import Algebra.Ring
+import Algebra.ToInteger
 import NumericPrelude
 
 -- | Data type representation of algebraic expressions in one variable.
@@ -48,16 +49,18 @@ sub a b = Add [a, neg b]
 div :: Algebra.Ring.C a => Expr a -> Expr a-> Expr a
 div a b = Mul [a, Pow b (-1)]
 
--- | Evaluate an expression at the point /x/.
---
--- >>> eval 5 (Add [X, Num 3])
--- 8.0
-eval :: Double -> Expr Double -> Double
-eval x X         = x
-eval _ (Num n)   = n
+---- | Evaluate an expression at the point /x/.
+----
+---- >>> eval 5 (Add [X, Num 3])
+---- 8.0
+eval :: (Algebra.ToInteger.C a, Algebra.Field.C b) => a -> Expr a -> b
+eval x X         = fromIntegral x
+eval _ (Num n)   = fromIntegral n
 eval x (Add xs)  = sum (fmap (eval x) xs)
 eval x (Mul xs)  = product (fmap (eval x) xs)
-eval x (Pow a n) = eval x a**fromIntegral n
+eval x (Pow a n) = if n >= 0
+                        then eval x a^n
+                        else fromIntegral (negate n) * recip (eval x a)
 
 isX, isAdd, isMul, isPow :: Expr a -> Bool
 

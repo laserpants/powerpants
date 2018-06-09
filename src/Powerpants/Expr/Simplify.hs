@@ -105,14 +105,14 @@ collectAlike = foldr fn [] where
     fn (Pow a n) al = increment a (fromIntegral n) al
     fn expr      al = increment expr 1 al
 
-abc :: (Algebra.ToInteger.C a, Algebra.Ring.C a, Ord a) => Expr a -> Expr a
-abc (Add xs) = Add (expand <$> collectTerms xs) where
+collected :: (Algebra.ToInteger.C a, Algebra.Ring.C a, Ord a) => Expr a -> Expr a
+collected (Add xs) = Add (expand <$> collectTerms xs) where
     expand (x, 1) = x
     expand (x, c) = Mul [Num (fromIntegral c), x]
-abc (Mul xs) = Mul (expand <$> collectAlike xs) where
+collected (Mul xs) = Mul (expand <$> collectAlike xs) where
     expand (x, 1) = x
     expand (x, n) = Pow x (fromIntegral n)
-abc expr = expr
+collected expr = expr
 
 simplified :: (Algebra.Ring.C a, Ord a) => Expr a -> Expr a
 simplified = combined . compressed . flattened
