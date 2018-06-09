@@ -4,6 +4,7 @@ module Powerpants.Expr
   ( Expr(..)
   , neg
   , sub
+  , div
   , eval
   -- * Predicates
   , isX
