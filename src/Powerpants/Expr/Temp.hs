@@ -5,6 +5,8 @@ module Powerpants.Expr.Temp where
 import Algebra.Ring
 import Algebra.ToInteger
 import NumericPrelude
+import Powerpants.Expr.Symbolic
+import Powerpants.Expr.Derivative
 import Powerpants.Expr
 
 expr0 :: Expr Integer
@@ -53,4 +55,14 @@ expr0 =
     ]
   ]
 
+expr1 :: Expr Integer
+expr1 = 1/(1-X)
 
+expr2 :: Expr Integer
+expr2 = 5*X^3 + 4*X^2 + 1/(1-X) + 40*X/(1-X-X^2)
+
+expr3 :: Expr Integer
+expr3 = 1/(1-X-X^2)
+
+expr4 :: Expr Integer
+expr4 = ddx (ddx (1/(1-X-X^2)))

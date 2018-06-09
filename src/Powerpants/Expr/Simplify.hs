@@ -46,7 +46,7 @@ applyId (Mul [ ]) = Num 1
 applyId (Mul [x]) = x
 applyId expr      = expr
 
--- | Combine constants under an addition or multiplication node by adding or
+-- | Combine constants under addition and multiplication nodes by adding or
 --   multiplying them into a single 'Num' value.
 combined :: (Algebra.Ring.C a, Ord a) => Expr a -> Expr a
 combined (Add xs) = applyId (Add (fmap combined exprs)) where
@@ -90,7 +90,7 @@ collectTerms :: (Algebra.ToInteger.C a, Algebra.Ring.C a, Ord a)
              => [Expr a]
              -> AssocList (Expr a) Int
 collectTerms = foldr fn [] where
-    fn (Num n)  al = (Num n, 1) : al  -- Constants are folded later
+    fn (Num n)  al = (Num n, 1) : al  -- Leave constants for now
     fn (Mul xs) al =
         case sort xs of
           (Num n:xs) -> increment (Mul xs) (fromIntegral n) al
@@ -101,7 +101,7 @@ collectAlike :: (Algebra.ToInteger.C a, Algebra.Ring.C a, Ord a)
              => [Expr a]
              -> AssocList (Expr a) Int
 collectAlike = foldr fn [] where
-    fn (Num n)   al = (Num n, 1) : al  -- Constants are folded later
+    fn (Num n)   al = (Num n, 1) : al  -- Leave constants for now
     fn (Pow a n) al = increment a (fromIntegral n) al
     fn expr      al = increment expr 1 al
 
@@ -114,5 +114,13 @@ collected (Mul xs) = Mul (expand <$> collectAlike xs) where
     expand (x, n) = Pow x (fromIntegral n)
 collected expr = expr
 
-simplified :: (Algebra.Ring.C a, Ord a) => Expr a -> Expr a
-simplified = combined . compressed . flattened
+simplified :: (Algebra.ToInteger.C a, Algebra.Ring.C a, Ord a) => Expr a -> Expr a
+simplified = flattened . combined . compressed . collected
+
+simplified' :: (Algebra.ToInteger.C a, Algebra.Ring.C a, Ord a) => Expr a -> Expr a
+simplified' expr =
+    let expr' = simplified expr
+     in if expr' == expr
+            then expr'
+            else simplified' expr'
+
