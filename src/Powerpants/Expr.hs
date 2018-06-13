@@ -4,7 +4,7 @@ module Powerpants.Expr
   ( Expr(..)
   , neg
   , sub
-  , div
+  , divexpr
   , eval
   -- * Predicates
   , isX
@@ -46,9 +46,9 @@ sub a b = Add [a, neg b]
 -- | Division, implemented as the reciprocal of the r.h.s. 'Expr' multiplied
 --   by the l.h.s. value.
 --
--- > div a b = Mul [a, Pow b (-1)]
-div :: Algebra.Ring.C a => Expr a -> Expr a-> Expr a
-div a b = Mul [a, Pow b (-1)]
+-- > divexpr a b = Mul [a, Pow b (-1)]
+divexpr :: Algebra.Ring.C a => Expr a -> Expr a-> Expr a
+divexpr a b = Mul [a, Pow b (-1)]
 
 ---- | Evaluate an expression at the point /x/.
 ----
