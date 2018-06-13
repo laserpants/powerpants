@@ -86,7 +86,7 @@ increment expr m al =
       Just n  -> insert (expr, n + m) (filter ((/= expr) . fst) al)
       Nothing -> insert (expr, m) al
 
-collectTerms :: (Algebra.ToInteger.C a, Algebra.Ring.C a, Ord a)
+collectTerms :: (Algebra.ToInteger.C a, Ord a)
              => [Expr a]
              -> AssocList (Expr a) Int
 collectTerms = foldr fn [] where
@@ -97,7 +97,7 @@ collectTerms = foldr fn [] where
           xs'        -> increment (Mul xs') 1 al
     fn expr al = increment expr 1 al
 
-collectAlike :: (Algebra.ToInteger.C a, Algebra.Ring.C a, Ord a)
+collectAlike :: (Algebra.ToInteger.C a, Ord a)
              => [Expr a]
              -> AssocList (Expr a) Int
 collectAlike = foldr fn [] where
@@ -105,22 +105,22 @@ collectAlike = foldr fn [] where
     fn (Pow a n) al = increment a (fromIntegral n) al
     fn expr      al = increment expr 1 al
 
-collected :: (Algebra.ToInteger.C a, Algebra.Ring.C a, Ord a) => Expr a -> Expr a
-collected (Add xs) = Add (expand <$> collectTerms xs) where
+collected :: (Algebra.ToInteger.C a, Ord a) => Expr a -> Expr a
+collected (Add xs) = Add (collected . expand <$> collectTerms xs) where
     expand (x, 1) = x
     expand (x, c) = Mul [Num (fromIntegral c), x]
-collected (Mul xs) = Mul (expand <$> collectAlike xs) where
+collected (Mul xs) = Mul (collected . expand <$> collectAlike xs) where
     expand (x, 1) = x
-    expand (x, n) = Pow x (fromIntegral n)
+    expand (x, n) = Pow (collected x) (fromIntegral n)
+collected (Pow a n) = Pow (collected a) n
 collected expr = expr
 
-simplified :: (Algebra.ToInteger.C a, Algebra.Ring.C a, Ord a) => Expr a -> Expr a
+simplified :: (Algebra.ToInteger.C a, Ord a) => Expr a -> Expr a
 simplified = flattened . combined . compressed . collected
 
-simplified' :: (Algebra.ToInteger.C a, Algebra.Ring.C a, Ord a) => Expr a -> Expr a
+simplified' :: (Algebra.ToInteger.C a, Ord a) => Expr a -> Expr a
 simplified' expr =
     let expr' = simplified expr
      in if expr' == expr
             then expr'
             else simplified' expr'
-
