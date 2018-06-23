@@ -63,7 +63,7 @@ Polynomials (in one variable) are represented as a list of monomials, each given
 type Polynomial a = [(Integer, a)]
 ```
 
-For example, the polynomial <i> 5x^3 + 2x + 7 </i> is implemented as a list:
+For example, the polynomial <i> 5x^3 + 2x + 7 </i> is implemented in list form as:
 
 ```
 [(3, 5), (1, 2), (0, 7)]
