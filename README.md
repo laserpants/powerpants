@@ -2,7 +2,7 @@
 
 ### Polynomials
 
-Polynomials (in one variable) are represented as a list of monomials, given as degree-coefficient pairs.
+Polynomials (in one variable) are represented as a list of monomials, where each term is given as a degree-coefficient pair.
 
 ```
 type Polynomial a = [(Integer, a)]
@@ -14,11 +14,13 @@ For example, the polynomial <i> 5x<sup>3</sup> + 2x + 7 </i> is implemented in l
 [(3, 5), (1, 2), (0, 7)]
 ```
 
-No assumption should be made about the order of the terms in the list.
+We implement some basic polynomials:
 
 ```
-x = [(1, 1)]
+px1x = [(1, 1)]
 ```
+
+<!-- No assumption should be made about the order of the terms in the list (or?). -->
 
 The zero polynomial is represented by the empty list.
 
