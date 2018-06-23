@@ -13,7 +13,7 @@
    [ c d e ]
 ```
 
-* a + b + (c + d + e) = a + b + c + d + e *
+<i> a + b + (c + d + e) = a + b + c + d + e </i>
 
 
 ##### Flatten nested multiplication nodes
