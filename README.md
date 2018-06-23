@@ -5,7 +5,7 @@
 
 ##### Flatten nested nodes
 
-Multiplication and addition nodes that appear inside a node of its own type can be flattnend, since these operators satisfy the associative law.
+Multiplication and addition nodes that appear inside a node of its own type can be flattnend, since both of these operators satisfy the associative law.
 
 ```
    (+)                    (+)
