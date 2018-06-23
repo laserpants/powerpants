@@ -60,6 +60,20 @@ Flattening can be done recursively.
    [ d e f ]
 ```
 
+```haskell
+data Op = MulOp | AddOp deriving (Eq)
+
+flat :: Op -> [Expr a] -> [Expr a]
+flat op = rec where
+    rec [] = []
+    rec (expr:exprs) =
+        case (expr, op) of
+          (Mul xs, MulOp) -> rec exprs ++ rec xs
+          (Add xs, AddOp) -> rec exprs ++ rec xs
+          _               -> expr : rec exprs
+
+```
+
 ##### Identities
 
 ```
