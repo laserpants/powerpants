@@ -6,9 +6,9 @@
 ##### Flatten nested addition nodes
 
 ```
-   (+)                   (+)
-    |         ==>         |
-[ a b (+) ]         [ a b c d e ]
+   (+)                    (+)
+    |                      |
+[ a b (+) ]   ===>   [ a b c d e ]
        | 
    [ c d e ]
 ```
