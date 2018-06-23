@@ -3,7 +3,9 @@
 
 ### Simplifying expressions
 
-##### Flatten nested addition nodes
+##### Flatten nested nodes
+
+Multiplication and addition nodes that appear inside of a node of its own type can be flattnend, since these operators satisfy the associative law.
 
 ```
    (+)                    (+)
@@ -26,8 +28,6 @@
         |
     [ d e f ]
 ```
-
-##### Flatten nested multiplication nodes
 
 ##### Identities
 
