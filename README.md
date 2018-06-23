@@ -16,6 +16,10 @@ For example, the polynomial <i> 5x<sup>3</sup> + 2x + 7 </i> is implemented in l
 
 No assumption should be made about the order of the terms in the list.
 
+```
+x = [(1, 1)]
+```
+
 The zero polynomial is represented by the empty list.
 
 ```
@@ -23,6 +27,8 @@ pxzero = []
 ```
 
 ### Expressions in one variable
+
+### Symbolic manipulation
 
 ### Simplifying expressions
 
