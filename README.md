@@ -42,3 +42,16 @@ Flattening can be done recursively.
     |   ===>   1
    [ ]
 ```
+
+```
+   (+)
+    |   ===>   a
+  [ a ]
+```
+
+```
+   (×)
+    |   ===>   a
+  [ a ]
+```
+
