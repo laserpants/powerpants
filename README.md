@@ -57,7 +57,7 @@ Flattening can be done recursively.
 
 ### Polynomials
 
-Polynomials (in one variable) are represented as a list of monomials, each given as a degree-coefficient pair.
+Polynomials (in one variable) are represented as a list of monomials, given as a degree-coefficient pairs.
 
 ```
 type Polynomial a = [(Integer, a)]
