@@ -5,7 +5,7 @@
 
 ##### Flatten nested nodes
 
-A multiplication or addition node that appear inside a node of its own type can be merged with its parent, since these operators satisfy the associative law. For example, the identity <i> a + b + (c + d + e) = a + b + c + d + e </i> is captured by to the following simplification:
+A multiplication or addition node that appears inside a node of its own type can be merged with its parent, since these operators satisfy the associative law. For example, the identity <i> a + b + (c + d + e) = a + b + c + d + e </i> is captured by to the following simplification:
 
 ```
    (+)                    (+)
