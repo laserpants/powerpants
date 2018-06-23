@@ -22,9 +22,9 @@
     |                        |
 [ a b (+) ]   ===>   [ a b c d e f g ]
        | 
-   [ c d (+) ]
-          |
-      [ e f g ]
+   [ c (+) g ]
+        |
+    [ d e f ]
 ```
 
 ##### Flatten nested multiplication nodes
