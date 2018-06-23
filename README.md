@@ -2,7 +2,7 @@
 
 ### Polynomials
 
-Polynomials (in one variable) are represented as a list of monomials, given as a degree-coefficient pairs.
+Polynomials (in one variable) are represented as a list of monomials, given as degree-coefficient pairs.
 
 ```
 type Polynomial a = [(Integer, a)]
