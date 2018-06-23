@@ -24,9 +24,9 @@ Flattening can be done recursively.
     |                        |
 [ a b (+) ]   ===>   [ a b c d e f g ]
        | 
-   [ c (+) g ]
-        |
-    [ d e f ]
+  [ c (+) g ]
+       |
+   [ d e f ]
 ```
 
 ##### Identities
