@@ -55,3 +55,18 @@ Flattening can be done recursively.
   [ a ]
 ```
 
+### Polynomials
+
+Polynomials are represented as a list of monomials, each given as a degree-coefficient pair.
+
+```
+type Polynomial a = [(Integer, a)]
+```
+
+For example, the polynomial <i> 5x^3 + 2x + 7 </i> is implemented as a list:
+
+```
+[(3, 5), (1, 2), (0, 7)]
+```
+
+No assumption can be made about the order of the terms in the list.
