@@ -69,4 +69,10 @@ For example, the polynomial <i> 5x^3 + 2x + 7 </i> is implemented as a list:
 [(3, 5), (1, 2), (0, 7)]
 ```
 
-No assumption can be made about the order of the terms in the list.
+No assumption should be made about the order of the terms in the list.
+
+The zero polynomial is represented by the empty list.
+
+```
+pxzero = []
+```
