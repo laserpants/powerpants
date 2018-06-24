@@ -14,7 +14,7 @@ For example, the polynomial <i> 5x<sup>3</sup> + 2x + 7 </i> is implemented in l
 [(3, 5), (1, 2), (0, 7)]
 ```
 
-We implement some basic building blocks.
+We provide some basic building blocks.
 
 ```haskell
 px1x = [(1, 1)]            
@@ -97,4 +97,24 @@ flat op = rec where
    (×)
     |   ===>   a
   [ a ]
+```
+
+##### Misc.
+
+```
+     (+)         (+)
+      |   ===>    |
+  [ a 0 b ]    [ a b ]
+```
+
+```
+     (×)         (×)
+      |   ===>    |
+  [ a 1 b ]    [ a b ]
+```
+
+```
+     (×)         
+      |   ===>    0
+  [ a 0 b ]     
 ```
