@@ -18,10 +18,8 @@ We provide some basic building blocks.
 
 ```haskell
 px1x = [(1, 1)]            
-constant n = Px [(0, n)]   -- A constant is a zero-degree monomial.
+pxconst n = [(0, n)]    -- A constant is a zero-degree monomial.
 ```
-
-<!-- No assumption should be made about the order of the terms in the list (or?). -->
 
 The zero polynomial is represented by the empty list.
 
