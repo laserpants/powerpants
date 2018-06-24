@@ -39,6 +39,12 @@ pxdeg [] = -1
 pxdeg terms = fst (head (pxsorted terms))
 ```
 
+The additive inverse of a polynomial is constructed by negating the second component of each element in the list.
+
+```
+pxneg = fmap (fmap negate)
+```
+
 ### Expressions in one variable
 
 ### Symbolic manipulation
