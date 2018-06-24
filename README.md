@@ -14,7 +14,13 @@ For example, the polynomial <i> 5x<sup>3</sup> + 2x + 7 </i> is implemented in l
 [(3, 5), (1, 2), (0, 7)]
 ```
 
-We provide some basic building blocks.
+It is convenient to work with these lists in sorted order, with the leading term first.
+
+```haskell
+pxsorted = sortBy (flip compare `on` fst)
+```
+
+We can implement some basic building blocks.
 
 ```haskell
 px1x = [(1, 1)]            
