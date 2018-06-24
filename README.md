@@ -27,10 +27,16 @@ px1x = [(1, 1)]
 pxconst n = [(0, n)]    -- A constant is a zero-degree monomial.
 ```
 
-The zero polynomial is represented by the empty list.
+The zero polynomial is represented by the empty list.  
 
 ```haskell
 pxzero = []
+```
+This is consistent with the idea that the degree of a polynomial is the degree of its highest order monomial. That is, the first element's first component in the sorted list of terms. Since the empty list doesn't have any terms, its degree is undefined. 
+
+```haskell
+pxdeg [] = -1
+pxdeg terms = deg (head (pxsorted terms))
 ```
 
 ### Expressions in one variable
