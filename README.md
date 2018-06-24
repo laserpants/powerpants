@@ -2,7 +2,7 @@
 
 ### Polynomials
 
-Polynomials (in one variable) are represented as a list of monomials, where each term is given as a degree-coefficient pair.
+A polynomial (in one variable) is represented as a list of monomials, in which each term is given as a degree-coefficient pair.
 
 ```haskell
 type Polynomial a = [(Integer, a)]
