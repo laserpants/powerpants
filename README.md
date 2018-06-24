@@ -47,7 +47,7 @@ pxdeg terms = fst (head (pxsorted terms))
 
 ##### Flattening nested nodes
 
-A multiplication or addition node that appears inside a node of the same type can be merged with its parent, since these operators satisfy the associative law. For example, the identity <i> a + b + (c + d + e) = a + b + c + d + e </i> is captured by to the following simplification:
+A multiplication or addition node that appears inside a node of the same type can be merged with its parent, since these operators satisfy the associative law. For example, the identity <i> a + b + (c + d + e) = a + b + c + d + e </i> is captured by to the following node tree simplification step:
 
 ```
    (+)                    (+)
@@ -57,7 +57,7 @@ A multiplication or addition node that appears inside a node of the same type ca
    [ c d e ]
 ```
 
-Naturally, flattening can be done recursively.
+Flattening can be performed recursively.
 
 ```
    (+)                      (+)
