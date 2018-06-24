@@ -123,6 +123,8 @@ flat op = rec where
   [ a 1 b ]         [ a b ]
 ```
 
+##### Zero product
+
 ```
      (×)         
       |      ===>   0
