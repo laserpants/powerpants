@@ -36,7 +36,7 @@ This is consistent with the idea that the degree of a polynomial is the degree o
 
 ```haskell
 pxdeg [] = -1
-pxdeg terms = deg (head (pxsorted terms))
+pxdeg terms = fst (head (pxsorted terms))
 ```
 
 ### Expressions in one variable
