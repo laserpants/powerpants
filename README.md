@@ -32,7 +32,7 @@ The zero polynomial is represented by the empty list.
 ```haskell
 pxzero = []
 ```
-This is consistent with the idea that the degree of a polynomial is equal to the degree of its highest order monomial. In our implementation, this is the first element's first component in the sorted list of terms. Since the empty list doesn't have any terms, its degree is undefined.
+This is consistent with the idea that the degree of a polynomial is equal to the degree of its highest order monomial. In our implementation, this is the first element's first component in the sorted list of terms. Since the empty list doesn't have any terms, its degree is undefined. 
 
 ```haskell
 pxdeg [] = -1
@@ -47,13 +47,13 @@ pxneg = fmap (fmap negate)
 
 ### Expressions in one variable
 
-### Symbolic manipulation
+### Symbolic algebra
 
 ### Simplifying expressions
 
 ##### Flattening nested nodes
 
-A multiplication or addition node that appears inside a node of the same type can be merged with its parent, since these operators satisfy the associative law. For example, the identity <i> a + b + (c + d + e) = a + b + c + d + e </i> is captured by to the following node tree simplification step:
+A multiplication or addition node that appears inside a node of the same type can safely be merged with its parent, since these operators satisfy the associative law. For example, the identity <i> a + b + (c + d + e) = a + b + c + d + e </i> is captured by to the following node tree simplification step:
 
 ```
    (+)                    (+)
