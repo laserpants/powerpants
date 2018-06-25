@@ -1,5 +1,14 @@
 # powerpants
 
+### Polynomials
+
+A polynomial (in one variable) is represented by a list of monomials, in which each term is given as a degree-coefficient pair.
+
+```haskell
+newtype Polynomial a = Px [(Integer, a)] 
+  deriving (Show, Eq, Ord)
+```
+
 <!--
 
 ### Polynomials
