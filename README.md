@@ -19,12 +19,14 @@ To eliminate zero values in the map, we export the following constructor:
 polynomial = Px . Map.filter (/= 0) . fromListWith (+)
 ```
 
-For example, the polynomial 5x<sup>3</sup> + 2x + 7 is created with `polynomial [(3, 5), (1, 2), (0, 7)]`. The order in which these terms appear in the list is now irrelevant. Keys that appear more than once in the list are simply added together. 
+For example, the polynomial 5x<sup>3</sup> + 2x + 7 is created with `polynomial [(3, 5), (1, 2), (0, 7)]`. The order in which these terms appear in the list is now irrelevant. 
 
 ```haskell
 λ> polynomial [(3, 5), (1, 2), (0, 7)] == polynomial [(0, 7), (1, 2), (2, 0), (3, 5)]
 True
 ```
+
+Keys that appear more than once in the list are simply added together.
 
 5x<sup>3</sup> + x<sup>3</sup> + 2x<sup>3</sup> = 8x<sup>3</sup>
 
@@ -32,6 +34,8 @@ True
 λ> polynomial [(3, 5), (3, 1), (3, 2)] == polynomial [(3, 8)]
 True
 ```
+
+
 
 <!--
 
