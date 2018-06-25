@@ -14,16 +14,16 @@ There are two invariants that need to be enforced. Firstly, there can't be any d
 polynomial = Px . Map.filter (/= 0) . fromListWith (+)
 ```
 
-The `Polynomial` type itself is opaque. That is to say, we do not export the `Px` constructor itself. Instead we use the `polynomial` function as a constructor. This will ensure that `Polynomial` values always are in this canonical form.
+The `Polynomial` type itself is opaque. That is to say, the `Px` constructor itself is not exported. Instead we use the `polynomial` function as a proxy. This will ensure that `Polynomial` values always are in this canonical form.
 
-For example, the polynomial 5x<sup>3</sup> + 2x + 7 is created with `polynomial [(3, 5), (1, 2), (0, 7)]`. The order in which these terms appear in the list is irrelevant. Zero terms are ignored. Comparison of two polynomials now agree with our intuitive understanding of what it means for two polynomials to be equal:
+For example, the polynomial 5x<sup>3</sup> + 2x + 7 is created using `polynomial [(3, 5), (1, 2), (0, 7)]`. The order in which these terms appear in the list is irrelevant. Zero terms are ignored. Comparison of two polynomials now agree with our intuitive understanding of what it means for two polynomials to be equal:
 
 ```haskell
 λ> polynomial [(3, 5), (1, 2), (0, 7)] == polynomial [(0, 7), (1, 2), (2, 0), (3, 5)]
 True
 ```
 
-Keys that appear more than once in the list are simply added together. For example, 5x<sup>3</sup> + x<sup>3</sup> + 2x<sup>3</sup> = 8x<sup>3</sup> 
+Keys that appear more than once in the list are simply added together. For example, consider the equation 5x<sup>3</sup> + x<sup>3</sup> + 2x<sup>3</sup> = 8x<sup>3</sup>, which translates to the following code:
 
 ```haskell
 λ> polynomial [(3, 5), (3, 1), (3, 2)] == polynomial [(3, 8)]
