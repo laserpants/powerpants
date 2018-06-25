@@ -2,6 +2,8 @@
 
 ### Polynomials
 
+<!--
+
 A polynomial (in one variable) is represented by a list of monomials, in which each term is given as a degree-coefficient pair.
 
 ```haskell
@@ -26,7 +28,7 @@ polynomial [(3, 5), (1, 2), (0, 7)]
 True
 ```
 
-<!--
+
 
 ### Polynomials
 
