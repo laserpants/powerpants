@@ -59,7 +59,7 @@ degree (Px px)
   | otherwise = fst (findMax px)
 ```
 
-The additive inverse of a polynomial is constructed by negating the second component of each element in the list.
+The additive inverse of a polynomial is constructed simply by negating all values in the map.
 
 ```haskell
 pneg (Px px) = Px (Map.map negate px)
