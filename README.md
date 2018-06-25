@@ -26,6 +26,8 @@ For example, the polynomial 5x<sup>3</sup> + 2x + 7 is created with `polynomial 
 True
 ```
 
+5x<sup>3</sup> + x<sup>3</sup> + 2x<sup>3</sup> = 8x<sup>3</sup>
+
 ```haskell
 λ> polynomial [(3, 5), (3, 1), (3, 2)] == polynomial [(3, 8)]
 True
