@@ -9,7 +9,9 @@ newtype Polynomial a = Px [(Integer, a)]
   deriving (Show, Eq, Ord)
 ```
 
-- sorted order
+We want to be able to make some assumptions about these lists:
+
+- The terms are in sorted order, with the leading term first.
 - no zero coefficients
 - the zero polynomial is the empty list
 
