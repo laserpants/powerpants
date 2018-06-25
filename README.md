@@ -1,5 +1,7 @@
 # powerpants
 
+<!--
+
 ### Polynomials
 
 A polynomial (in one variable) is represented by a list of monomials, in which each term is given as a degree-coefficient pair.
@@ -32,6 +34,7 @@ The zero polynomial is represented by the empty list.
 ```haskell
 pxzero = []
 ```
+
 This is consistent with the idea that the degree of a polynomial is equal to the degree of its highest order monomial. In our implementation, this is the first element's first component in the sorted list of terms. Since the empty list doesn't have any terms, its degree is undefined. 
 
 ```haskell
@@ -132,3 +135,5 @@ flat op = rec where
       |      ===>   0
   [ a 0 b ]     
 ```
+
+-->
