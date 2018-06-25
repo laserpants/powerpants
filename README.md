@@ -8,13 +8,18 @@ Polynomials are implemented as a map from degree keys to coefficient values.
 type Polynomial a = Map Integer a
 ```
 
-To make sure that the map doesn't contain entries with coefficients equal to zero, we export the following function:
+There are two invariants we'd like to enforce;
+
+- No duplicate keys. This is already taken care of by the data structure.
+- No zero coefficients.
+
+To eliminate zero values in the map, we export the following constructor:
 
 ```haskell
 polynomial = Map.filter (/= 0) . fromListWith (+)
 ```
 
-For example, the polynomial 5x<sup>3</sup> + 2x + 7 is created with `polynomial [(3, 5), (1, 2), (0, 7)]`. The order in which these terms appear in the list is now irrelevant.
+For example, the polynomial 5x<sup>3</sup> + 2x + 7 is created with `polynomial [(3, 5), (1, 2), (0, 7)]`. The order in which these terms appear in the list is now irrelevant. Keys that appear more than once in the list are simply added together. 
 
 ```haskell
 λ> polynomial [(3, 5), (1, 2), (0, 7)] == polynomial [(0, 7), (1, 2), (2, 0), (3, 5)]
