@@ -2,6 +2,30 @@
 
 ### Polynomials
 
+Polynomials are implemented as a map from degree keys to coefficient values.
+
+```haskell
+type Polynomial a = Map Integer a
+```
+
+To make sure that the map doesn't contain entries with coefficients equal to zero, we export the following function:
+
+```haskell
+polynomial = Map.filter (/= 0) . fromListWith (+)
+```
+
+For example, the polynomial 5x<sup>3</sup> + 2x + 7 is created with `polynomial [(3, 5), (1, 2), (0, 7)]`. The order in which these terms appear in the list is now irrelevant.
+
+```haskell
+λ> polynomial [(3, 5), (1, 2), (0, 7)] == polynomial [(0, 7), (1, 2), (2, 0), (3, 5)]
+True
+```
+
+```haskell
+λ> polynomial [(3, 5), (3, 1), (3, 2)] == polynomial [(3, 8)]
+True
+```
+
 <!--
 
 A polynomial (in one variable) is represented by a list of monomials, in which each term is given as a degree-coefficient pair.
@@ -10,13 +34,6 @@ A polynomial (in one variable) is represented by a list of monomials, in which e
 newtype Polynomial a = Px [(Integer, a)] 
   deriving (Show, Eq, Ord)
 ```
-
-We want to be able to make some assumptions about these lists:
-
-- The terms are in sorted order, with the leading term first.
-- no zero coefficients
-- the zero polynomial is the empty list
-
 For example, the polynomial 5x<sup>3</sup> + 2x + 7 is implemented in list form as:
 
 ```haskell
