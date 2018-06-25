@@ -5,7 +5,7 @@
 Polynomials are implemented as a map from degree keys to coefficient values.
 
 ```haskell
-type Polynomial a = Map Integer a
+newtype Polynomial a = Px (Map Integer a)
 ```
 
 There are two invariants we'd like to enforce;
@@ -16,7 +16,7 @@ There are two invariants we'd like to enforce;
 To eliminate zero values in the map, we export the following constructor:
 
 ```haskell
-polynomial = Map.filter (/= 0) . fromListWith (+)
+polynomial = Px . Map.filter (/= 0) . fromListWith (+)
 ```
 
 For example, the polynomial 5x<sup>3</sup> + 2x + 7 is created with `polynomial [(3, 5), (1, 2), (0, 7)]`. The order in which these terms appear in the list is now irrelevant. Keys that appear more than once in the list are simply added together. 
