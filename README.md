@@ -13,7 +13,7 @@ newtype Polynomial a = Px [(Integer, a)]
 - no zero coefficients
 - the zero polynomial is the empty list
 
-For example, the polynomial <i>5x<sup>3</sup> + 2x + 7</i> is implemented in list form as:
+For example, the polynomial 5x<sup>3</sup> + 2x + 7 is implemented in list form as:
 
 ```haskell
 polynomial [(3, 5), (1, 2), (0, 7)]
