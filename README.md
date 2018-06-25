@@ -2,41 +2,46 @@
 
 ### Polynomials
 
-Polynomials are implemented as a map from degree keys to coefficient values.
+Polynomials are implemented as a map (`Data.Map.Strict.Map`) from degree keys to coefficient values.
 
 ```haskell
+import Data.Map.Strict ( Map )
+
 newtype Polynomial a = Px (Map Integer a)
   deriving (Show, Eq, Ord)
 ```
 
-There are two invariants that need to be enforced. Firstly, there can't be any duplicate keys. This is already taken care of by the data structure. And secondly, there shouldn't be any terms with coefficients equal to zero (e.g., 0x<sup>3</sup>). To eliminate zero values in the map, we export the following function:
+There are two invariants that need to be enforced. First of all, there mustn't be any duplicate keys. This is already taken care of by the data structure. Secondly, there shouldn't be any terms with coefficients equal to zero (i.e., things like 0x<sup>3</sup>). 
+
+We create a `Polynomial` value from a list of degree-coefficient pairs. Using `fromListWith (+)`, keys that appear more than once in the list are added together. To eliminate zero values we can use the `filter` function in `Data.Map.Strict`. Here is what this looks like:
 
 ```haskell
+polynomial :: (Ord a, Algebra.Ring.C a) => [(Integer, a)] -> Polynomial a
 polynomial = Px . Map.filter (/= 0) . fromListWith (+)
 ```
 
-The `Polynomial` type itself is opaque. That is to say, the `Px` constructor is not exported. Instead we use the `polynomial` function as a, sort of, proxy. This will ensure that `Polynomial` values always are in this canonical form.
+The `Polynomial` type itself is opaque. That is to say, the `Px` constructor is not exported. Instead we use the `polynomial` function as a, sort of, proxy for `Px`. This will ensure that `Polynomial` values always are in this canonical form.
 
-For example, the polynomial 5x<sup>3</sup> + 2x + 7 is created using `polynomial [(3, 5), (1, 2), (0, 7)]`. The order in which these terms appear in the list is irrelevant. Zero terms are ignored. Comparison of two polynomials now agree with our intuitive understanding of what it means for two polynomials to be equal:
+For example, the polynomial 5x<sup>3</sup> + 2x + 7 is created using `polynomial [(3, 5), (1, 2), (0, 7)]`. The order in which these terms appear in the list is irrelevant. Zero terms are ignored, and duplicate keys are added together. Comparison of two polynomials now agree with our intuitive understanding of what it means for two polynomials to be equal:
 
 ```haskell
 λ> polynomial [(3, 5), (1, 2), (0, 7)] == polynomial [(0, 7), (1, 2), (2, 0), (3, 5)]
 True
 ```
 
-Keys that appear more than once in the list are simply added together (due to `fromListWith (+)`). For example, consider the equation 5x<sup>3</sup> + x<sup>3</sup> + 2x<sup>3</sup> = 8x<sup>3</sup>. This equality translates to the following code:
+The equation 5x<sup>3</sup> + x<sup>3</sup> + 2x<sup>3</sup> = 8x<sup>3</sup> translates to the following code:
 
 ```haskell
 λ> polynomial [(3, 5), (3, 1), (3, 2)] == polynomial [(3, 8)]
 True
 ```
 
-We can implement some basic building blocks.
+We can now implement some basic building blocks.
 
 ```haskell
 x = Px (fromList [(1, 1)])            
 
-constant 0 = pzero
+constant 0 = pzero -- The zero polynomial
 constant n = Px (fromList [(0, n)])
 ```
 
