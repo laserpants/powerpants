@@ -2,7 +2,7 @@
 
 ### Polynomials
 
-Polynomials are implemented as a map (`Data.Map.Strict.Map`) from degree keys to coefficient values.
+Polynomials are implemented as a map (`Data.Map.Strict.Map`) from degree (`Integer`) keys to coefficient values.
 
 ```haskell
 import Data.Map.Strict ( Map )
