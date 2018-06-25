@@ -9,6 +9,21 @@ newtype Polynomial a = Px [(Integer, a)]
   deriving (Show, Eq, Ord)
 ```
 
+- sorted order
+- no zero coefficients
+- the zero polynomial is the empty list
+
+For example, the polynomial <i>5x<sup>3</sup> + 2x + 7</i> is implemented in list form as:
+
+```haskell
+polynomial [(3, 5), (1, 2), (0, 7)]
+```
+
+```haskell
+λ> polynomial [(3, 5), (1, 2), (0, 7)] == polynomial [(0, 7), (1, 2), (2, 0), (3, 5)]
+True
+```
+
 <!--
 
 ### Polynomials
