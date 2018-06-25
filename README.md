@@ -11,9 +11,9 @@ newtype Polynomial a = Px (Map Integer a)
   deriving (Show, Eq, Ord)
 ```
 
-There are two invariants that need to be enforced. First of all, there mustn't be any duplicate keys. This is already taken care of by the data structure. Secondly, there shouldn't be any terms with coefficients equal to zero (i.e., things like 0x<sup>3</sup>). 
+There are two invariants that need to be enforced. Firstly, there mustn't be any duplicate keys. This is already taken care of by the data structure. Secondly, there shouldn't be any terms with coefficients equal to zero (i.e., things like 0x<sup>3</sup>). 
 
-We create a `Polynomial` value from a list of degree-coefficient pairs. Using `fromListWith (+)`, keys that appear more than once in the list are added together. To eliminate zero values we can use the `filter` function in `Data.Map.Strict`. Here is what this looks like:
+Our API should allow for `Polynomial` values to be created from lists of degree-coefficient pairs. Using `fromListWith (+)`,  values of keys that appear more than once in the list will be added together. To eliminate zero coefficients, we can use the `filter` function in `Data.Map.Strict`. Here is what this looks like:
 
 ```haskell
 polynomial :: (Ord a, Algebra.Ring.C a) => [(Integer, a)] -> Polynomial a
