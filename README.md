@@ -6,6 +6,7 @@ Polynomials are implemented as a map from degree keys to coefficient values.
 
 ```haskell
 newtype Polynomial a = Px (Map Integer a)
+  deriving (Show, Eq, Ord)
 ```
 
 There are two invariants that need to be enforced. Firstly, there can't be any duplicate keys. This is already taken care of by the data structure. And secondly, there shouldn't be any terms with coefficients equal to zero (e.g., 0x<sup>3</sup>). To eliminate zero values in the map, we export the following function:
@@ -23,80 +24,40 @@ For example, the polynomial 5x<sup>3</sup> + 2x + 7 is created using `polynomial
 True
 ```
 
-Keys that appear more than once in the list are simply added together (due to `fromListWith (+)`). For example, consider the equation 5x<sup>3</sup> + x<sup>3</sup> + 2x<sup>3</sup> = 8x<sup>3</sup>, which translates to the following code:
+Keys that appear more than once in the list are simply added together (due to `fromListWith (+)`). For example, consider the equation 5x<sup>3</sup> + x<sup>3</sup> + 2x<sup>3</sup> = 8x<sup>3</sup>. This equality translates to the following code:
 
 ```haskell
 λ> polynomial [(3, 5), (3, 1), (3, 2)] == polynomial [(3, 8)]
 True
 ```
 
-
-
-<!--
-
-A polynomial (in one variable) is represented by a list of monomials, in which each term is given as a degree-coefficient pair.
-
-```haskell
-newtype Polynomial a = Px [(Integer, a)] 
-  deriving (Show, Eq, Ord)
-```
-For example, the polynomial 5x<sup>3</sup> + 2x + 7 is implemented in list form as:
-
-```haskell
-polynomial [(3, 5), (1, 2), (0, 7)]
-```
-
-```haskell
-λ> polynomial [(3, 5), (1, 2), (0, 7)] == polynomial [(0, 7), (1, 2), (2, 0), (3, 5)]
-True
-```
-
-
-
-### Polynomials
-
-A polynomial (in one variable) is represented by a list of monomials, in which each term is given as a degree-coefficient pair.
-
-```haskell
-type Polynomial a = [(Integer, a)]
-```
-
-For example, the polynomial <i> 5x<sup>3</sup> + 2x + 7 </i> is implemented in list form as:
-
-```haskell
-[(3, 5), (1, 2), (0, 7)]
-```
-
-It is convenient to work with these lists in sorted order, with the leading term first.
-
-```haskell
-pxsorted = sortBy (flip compare `on` fst)
-```
-
 We can implement some basic building blocks.
 
 ```haskell
-px1x = [(1, 1)]            
-pxconst n = [(0, n)]    -- A constant is a zero-degree monomial.
+x = Px (fromList [(1, 1)])            
+
+constant 0 = pzero
+constant n = Px (fromList [(0, n)])
 ```
 
-The zero polynomial is represented by the empty list.  
+The zero polynomial is represented by the `empty` map.  
 
 ```haskell
-pxzero = []
+pzero = Px empty
 ```
 
-This is consistent with the idea that the degree of a polynomial is equal to the degree of its highest order monomial. In our implementation, this is the first element's first component in the sorted list of terms. Since the empty list doesn't have any terms, its degree is undefined. 
+This is consistent with the idea that the degree of a polynomial is equal to the degree of its highest order monomial (and either undefined or -1 for the zero polynomial). In our implementation, this corresponds to the value of the maximal key in the map. For the `empty` map, this is `undefined`. To be nice to implementations, we use -1 to denote this.
 
 ```haskell
-pxdeg [] = -1
-pxdeg terms = fst (head (pxsorted terms))
+degree (Px px) 
+  | null px   = -1
+  | otherwise = fst (findMax px)
 ```
 
 The additive inverse of a polynomial is constructed by negating the second component of each element in the list.
 
-```
-pxneg = fmap (fmap negate)
+```haskell
+pneg (Px px) = Px (Map.map negate px)
 ```
 
 ### Expressions in one variable
