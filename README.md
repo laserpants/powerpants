@@ -23,7 +23,7 @@ For example, the polynomial 5x<sup>3</sup> + 2x + 7 is created using `polynomial
 True
 ```
 
-Keys that appear more than once in the list are simply added together. For example, consider the equation 5x<sup>3</sup> + x<sup>3</sup> + 2x<sup>3</sup> = 8x<sup>3</sup>, which translates to the following code:
+Keys that appear more than once in the list are simply added together (due to `fromListWith (+)`). For example, consider the equation 5x<sup>3</sup> + x<sup>3</sup> + 2x<sup>3</sup> = 8x<sup>3</sup>, which translates to the following code:
 
 ```haskell
 λ> polynomial [(3, 5), (3, 1), (3, 2)] == polynomial [(3, 8)]
