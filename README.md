@@ -8,27 +8,22 @@ Polynomials are implemented as a map from degree keys to coefficient values.
 newtype Polynomial a = Px (Map Integer a)
 ```
 
-There are two invariants we'd like to enforce;
-
-- No duplicate keys. This is already taken care of by the data structure.
-- No zero coefficients.
-
-To eliminate zero values in the map, we export the following constructor:
+There are two invariants that need to be enforced. Firstly, there shouldn't be any duplicate keys. This is already taken care of by the data structure. And secondly, there shouldn't be any terms with coefficients equal to zero (e.g., 0x<sup>3</sup>). To eliminate zero values in the map, we export the following function:
 
 ```haskell
 polynomial = Px . Map.filter (/= 0) . fromListWith (+)
 ```
 
-For example, the polynomial 5x<sup>3</sup> + 2x + 7 is created with `polynomial [(3, 5), (1, 2), (0, 7)]`. The order in which these terms appear in the list is now irrelevant. 
+The `Polynomial` type itself is opaque. That is to say, we do not export the `Px` constructor itself. Instead we use the `polynomial` function as a constructor. This will ensure that `Polynomial` values always are in this canonical form.
+
+For example, the polynomial 5x<sup>3</sup> + 2x + 7 is created with `polynomial [(3, 5), (1, 2), (0, 7)]`. The order in which these terms appear in the list is irrelevant. Zero terms are ignored. Comparison of two polynomials now agree with our intuitive understanding of what it means for two polynomials to be equal:
 
 ```haskell
 λ> polynomial [(3, 5), (1, 2), (0, 7)] == polynomial [(0, 7), (1, 2), (2, 0), (3, 5)]
 True
 ```
 
-Keys that appear more than once in the list are simply added together.
-
-5x<sup>3</sup> + x<sup>3</sup> + 2x<sup>3</sup> = 8x<sup>3</sup>
+Keys that appear more than once in the list are simply added together. For example, 5x<sup>3</sup> + x<sup>3</sup> + 2x<sup>3</sup> = 8x<sup>3</sup> 
 
 ```haskell
 λ> polynomial [(3, 5), (3, 1), (3, 2)] == polynomial [(3, 8)]
