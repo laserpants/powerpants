@@ -8,7 +8,7 @@ Polynomials are implemented as a map from degree keys to coefficient values.
 newtype Polynomial a = Px (Map Integer a)
 ```
 
-There are two invariants that need to be enforced. Firstly, there shouldn't be any duplicate keys. This is already taken care of by the data structure. And secondly, there shouldn't be any terms with coefficients equal to zero (e.g., 0x<sup>3</sup>). To eliminate zero values in the map, we export the following function:
+There are two invariants that need to be enforced. Firstly, there can't be any duplicate keys. This is already taken care of by the data structure. And secondly, there shouldn't be any terms with coefficients equal to zero (e.g., 0x<sup>3</sup>). To eliminate zero values in the map, we export the following function:
 
 ```haskell
 polynomial = Px . Map.filter (/= 0) . fromListWith (+)
