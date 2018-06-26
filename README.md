@@ -38,7 +38,7 @@ The equality 5x<sup>3</sup> + x<sup>3</sup> + 2x<sup>3</sup> = 8x<sup>3</sup> tr
 True
 ```
 
-We can now implement some basic building blocks.
+We can now go ahead and implement some basic building blocks.
 
 ```haskell
 mono d c = Px (singleton d c) -- Create a monomial
