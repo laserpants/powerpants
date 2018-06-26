@@ -13,14 +13,14 @@ newtype Polynomial a = Px { terms :: Map Nat a }
   deriving (Show, Eq, Ord)
 ```
 
-Our API should allow for `Polynomial` values to be created from a sparse list of degree-coefficient pairs. Now, there are two invariants that need to be enforced. Firstly, there mustn't be any duplicate keys. This is already taken care of by the data structure. Using `fromListWith (+)`, we make sure that values of keys that appear more than once in the list are added together. Secondly, there shouldn't be any terms with coefficients equal to zero (i.e., things like 0x<sup>3</sup>). To eliminate zero coefficients, we can use the `filter` function in `Data.Map.Strict`. Here is what this might look like:
+Our API should allow for `Polynomial` values to be created from a sparse list of degree-coefficient pairs. Now, there are two invariants that need to be enforced. Firstly, there mustn't be any duplicate keys. This is already taken care of by the data structure. Using `fromListWith (+)`, we make sure that values of those keys that appear more than once in the list are added together. Secondly, there shouldn't be any terms with coefficients equal to zero (i.e., things like 0x<sup>3</sup>). To eliminate zero coefficients, we can use the `filter` function in `Data.Map.Strict`. Here is the function we end up with:
 
 ```haskell
 polynomial :: (Ord a, Algebra.Ring.C a) => [(Nat, a)] -> Polynomial a
 polynomial = Px . Map.filter (/= 0) . fromListWith (+)
 ```
 
-The `Polynomial` type itself is opaque. That is to say, the `Px` constructor is not exported. Instead we use the `polynomial` function as a, sort of, proxy for `Px`. This will ensure that `Polynomial` values always appear in this canonical form.
+The `Polynomial` type itself is opaque. That is to say, the `Px` constructor is not exported. Instead we use the `polynomial` function as a &ndash; sort of &ndash; proxy for `Px`. This will ensure that `Polynomial` values always appear in this canonical form.
 
 For example, the polynomial 5x<sup>3</sup> + 2x + 7 is created using `polynomial [(3, 5), (1, 2), (0, 7)]`. The order in which these terms appear in the list is irrelevant. Zero terms are ignored, and duplicate keys are added together. Comparison of two polynomials now agrees with our intuitive understanding of what it means for polynomials to be equal:
 
@@ -29,7 +29,7 @@ For example, the polynomial 5x<sup>3</sup> + 2x + 7 is created using `polynomial
 True
 ```
 
-The equation 5x<sup>3</sup> + x<sup>3</sup> + 2x<sup>3</sup> = 8x<sup>3</sup> translates to the following code:
+The equality 5x<sup>3</sup> + x<sup>3</sup> + 2x<sup>3</sup> = 8x<sup>3</sup> translates to the following code:
 
 ```haskell
 λ> polynomial [(3, 5), (3, 1), (3, 2)] == polynomial [(3, 8)]
@@ -39,7 +39,7 @@ True
 We can now implement some basic building blocks.
 
 ```haskell
-mono d c = Px (singleton d c)
+mono d c = Px (singleton d c) -- Create a monomial
 
 constant 0 = zero
 constant n = mono 0 n
@@ -53,7 +53,7 @@ The zero polynomial is represented by the `empty` map.
 zero = Px empty
 ```
 
-This is consistent with the idea that the degree of a polynomial is equal to the degree of its highest order monomial (and  undefined for the zero polynomial). In our implementation, this corresponds to the value of the maximal key in the map. For the `empty` map, this is `undefined`. To be nice, we therefore wrap the result in a `Maybe` type, and return `Nothing` for the zero polynomial.
+This is consistent with the idea that the degree of a polynomial is equal to the degree of its highest order monomial (and  undefined for the zero polynomial). In our implementation, this corresponds to the value of the maximal key in the map. For the `empty` map, this is `undefined`. To be nice, we therefore wrap the result in a `Maybe` type and return `Nothing` for the zero polynomial.
 
 ```haskell
 degree (Px px) 
@@ -61,7 +61,7 @@ degree (Px px)
   | otherwise = Just (fst (findMax px))
 ```
 
-The additive inverse of a polynomial is constructed simply by negating all values in the map.
+The additive inverse of a polynomial is constructed by negating all values in the map.
 
 ```haskell
 neg = Px . Map.map negate . terms
