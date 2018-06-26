@@ -2,7 +2,7 @@
 
 ### Polynomials
 
-Polynomials are implemented as a map (`Data.Map.Strict.Map`) from degree keys to coefficient values. We use the `NonNegative` type from [Numeric Prelude](http://hackage.haskell.org/package/numeric-prelude) for the degree of a term.
+Polynomials are implemented as a map (`Data.Map.Strict.Map`) from degree keys to coefficient values. The degree of a term is a non-negative integer, so we introduce a `Nat` type alias for the `NonNegative` type from [Numeric Prelude](http://hackage.haskell.org/package/numeric-prelude) for this purpose.
 
 ```haskell
 import Data.Map.Strict ( Map )
