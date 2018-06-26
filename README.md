@@ -2,7 +2,7 @@
 
 ### Polynomials
 
-Polynomials are implemented as a map (`Data.Map.Strict.Map`) from degree keys to coefficient values. We use the `NonNegative` type from Numeric Prelude for term powers.
+Polynomials are implemented as a map (`Data.Map.Strict.Map`) from degree keys to coefficient values. We use the `NonNegative` type from [Numeric Prelude](http://hackage.haskell.org/package/numeric-prelude) for the degree of a term.
 
 ```haskell
 import Data.Map.Strict ( Map )
@@ -13,12 +13,10 @@ newtype Polynomial a = Px { terms :: Map Nat a }
   deriving (Show, Eq, Ord)
 ```
 
-There are two invariants that need to be enforced. Firstly, there mustn't be any duplicate keys. This is already taken care of by the data structure. Secondly, there shouldn't be any terms with coefficients equal to zero (i.e., things like 0x<sup>3</sup>). 
-
-Our API should allow for `Polynomial` values to be created from a list of degree-coefficient pairs. Using `fromListWith (+)`,  we make sure that values of keys that appear more than once in the list are added together. To eliminate zero coefficients, we can use the `filter` function in `Data.Map.Strict`. Here is what this might look like:
+Our API should allow for `Polynomial` values to be created from a list of degree-coefficient pairs. Now, there are two invariants that need to be enforced. Firstly, there mustn't be any duplicate keys. This is already taken care of by the data structure. Using `fromListWith (+)`, we make sure that values of keys that appear more than once in the list are added together. Secondly, there shouldn't be any terms with coefficients equal to zero (i.e., things like 0x<sup>3</sup>). To eliminate zero coefficients, we can use the `filter` function in `Data.Map.Strict`. Here is what this might look like:
 
 ```haskell
-polynomial :: (Ord a, Algebra.Ring.C a) => [(Integer, a)] -> Polynomial a
+polynomial :: (Ord a, Algebra.Ring.C a) => [(Nat, a)] -> Polynomial a
 polynomial = Px . Map.filter (/= 0) . fromListWith (+)
 ```
 
@@ -41,30 +39,32 @@ True
 We can now implement some basic building blocks.
 
 ```haskell
-x = Px (fromList [(1, 1)])            
+mono d c = Px (singleton d c)
 
-constant 0 = pzero -- The zero polynomial
-constant n = Px (fromList [(0, n)])
+constant 0 = zero
+constant n = mono 0 n
+
+x = mono 1 1
 ```
 
 The zero polynomial is represented by the `empty` map.  
 
 ```haskell
-pzero = Px empty
+zero = Px empty
 ```
 
-This is consistent with the idea that the degree of a polynomial is equal to the degree of its highest order monomial (and either undefined or -1 for the zero polynomial). In our implementation, this corresponds to the value of the maximal key in the map. For the `empty` map, this is `undefined`. To be nice to implementations, we use -1 to denote this.
+This is consistent with the idea that the degree of a polynomial is equal to the degree of its highest order monomial (and  undefined for the zero polynomial). In our implementation, this corresponds to the value of the maximal key in the map. For the `empty` map, this is `undefined`. To be nice, we therefore wrap the result in a `Maybe` type, and return `Nothing` for the zero polynomial.
 
 ```haskell
 degree (Px px) 
-  | null px   = -1
-  | otherwise = fst (findMax px)
+  | null px   = Nothing
+  | otherwise = Just (fst (findMax px))
 ```
 
 The additive inverse of a polynomial is constructed simply by negating all values in the map.
 
 ```haskell
-pneg (Px px) = Px (Map.map negate px)
+neg = Px . Map.map negate . terms
 ```
 
 ### Expressions in one variable
