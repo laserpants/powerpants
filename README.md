@@ -53,7 +53,7 @@ The zero polynomial is represented by the `empty` map.
 zero = Px empty
 ```
 
-This is consistent with the idea that the degree of a polynomial is equal to the degree of its highest order monomial (and  undefined for the zero polynomial). In our implementation, this corresponds to the value of the maximal key in the map. For the `empty` map, this is `undefined`. To be nice, we therefore wrap the result in a `Maybe` type and return `Nothing` for the zero polynomial.
+This is consistent with the idea that the degree of a polynomial is equal to the degree of its highest order monomial (and  undefined for the zero polynomial). In our implementation, this corresponds to the value of the maximal key in the map. For the `empty` map, this is `undefined`. To be nice, we can wrap the result in a `Maybe` type and return `Nothing` for the zero polynomial.
 
 ```haskell
 degree (Px px) 
