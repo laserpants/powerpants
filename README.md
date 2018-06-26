@@ -154,5 +154,3 @@ flat op = rec where
       |      ===>   0
   [ a 0 b ]     
 ```
-
--->
