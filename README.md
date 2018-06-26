@@ -2,7 +2,7 @@
 
 ### Polynomials
 
-Polynomials are implemented as a map (`Data.Map.Strict.Map`) from degree keys to coefficient values. The `Polynomial a` type is parameterized by the type of the coefficients. The implementation requires `a` to be an instance of the `Eq` and `Algebra.Ring.C` type classes. The latter constraint is especially useful, since the set of polynomials with coefficients from some ring **R** itself forms a ring, usually denoted **R[x]**. The degree of a term is a non-negative integer, so we also introduce a new `Nat` type for this purpose, using an alias for `Number.NonNegative.Integer` (defined in [Numeric Prelude](http://hackage.haskell.org/package/numeric-prelude)).
+Polynomials are implemented as a map (`Data.Map.Strict.Map`) from degree keys to coefficient values. The `Polynomial a` type is parameterized by the type of the coefficients. The implementation requires `a` to be an instance of the `Eq` and `Algebra.Ring.C` type classes. This latter constraint is especially useful, since the set of polynomials with coefficients from some ring **R** itself forms a ring, usually denoted **R[x]**. The degree of a term is a non-negative integer, so we also introduce a new `Nat` type for this purpose, using an alias for `Number.NonNegative.Integer` (defined in [Numeric Prelude](http://hackage.haskell.org/package/numeric-prelude)).
 
 ```haskell
 import Data.Map.Strict ( Map )
