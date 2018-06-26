@@ -13,7 +13,7 @@ newtype Polynomial a = Px { terms :: Map Nat a }
   deriving (Show, Eq, Ord)
 ```
 
-Our API should allow for `Polynomial` values to be created from a sparse list of degree-coefficient pairs. To make things run smoothly, there are two invariants that need to be enforced. Firstly, there mustn't be any duplicate keys. This is already taken care of by the data structure. Using `fromListWith (+)` to create the map, values of those keys that appear more than once in the list are added together. Secondly, there shouldn't be any terms with coefficients equal to zero (i.e., things like 0x<sup>3</sup>). To eliminate zero coefficients, we can use the `filter` function in `Data.Map.Strict`. Here is the function we end up with:
+Our API should allow for `Polynomial` values to be created from a sparse list of degree-coefficient pairs. To make things run smoothly, there are two invariants that need to be enforced. Firstly, there mustn't be any duplicate keys. This is already taken care of by the data structure. Furthermore, by using `fromListWith (+)` to create the map, values of those keys that appear more than once in the list are added together. Secondly, there shouldn't be any terms with coefficients equal to zero (i.e., things like 0x<sup>3</sup>). To eliminate zero coefficients, we can use the `filter` function in `Data.Map.Strict`. Here is the function we end up with:
 
 ```haskell
 polynomial :: (Ord a, Algebra.Ring.C a) => [(Nat, a)] -> Polynomial a
