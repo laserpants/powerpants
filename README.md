@@ -69,6 +69,8 @@ The additive inverse of a polynomial is constructed by negating all values in th
 neg = Px . Map.map negate . terms
 ```
 
+#### Ring instance
+
 ### Expressions in one variable
 
 ### Symbolic algebra
