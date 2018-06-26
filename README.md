@@ -2,12 +2,14 @@
 
 ### Polynomials
 
-Polynomials are implemented as a map (`Data.Map.Strict.Map`) from degree (`Integer`) keys to coefficient values.
+Polynomials are implemented as a map (`Data.Map.Strict.Map`) from degree keys to coefficient values. We use the `NonNegative` type from Numeric Prelude for term powers.
 
 ```haskell
 import Data.Map.Strict ( Map )
 
-newtype Polynomial a = Px (Map Integer a)
+type Nat = Number.NonNegative.Integer
+
+newtype Polynomial a = Px { terms :: Map Nat a }
   deriving (Show, Eq, Ord)
 ```
 
