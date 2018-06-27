@@ -31,7 +31,7 @@ For example, the polynomial 5x<sup>3</sup> + 2x + 7 is created using `polynomial
 True
 ```
 
-The equality 5x<sup>3</sup> + x<sup>3</sup> + 2x<sup>3</sup> = 8x<sup>3</sup> translates to the following code:
+The equality 5x<sup>3</sup> + x<sup>3</sup> + 2x<sup>3</sup> = 8x<sup>3</sup> carries over to the following code:
 
 ```haskell
 λ> polynomial [(3, 5), (3, 1), (3, 2)] == polynomial [(3, 8)]
