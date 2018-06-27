@@ -24,7 +24,7 @@ polynomial = Px . Map.filter (/= 0) . fromListWith (+)
 
 The `Polynomial` type itself is opaque. That is to say, the `Px` constructor is not exported. Instead we use the `polynomial` function as a &ndash; sort of &ndash; proxy for `Px`. This will ensure that `Polynomial` values always appear in this canonical form.
 
-For example, the polynomial 5x<sup>3</sup> + 2x + 7 is created using `polynomial [(3, 5), (1, 2), (0, 7)]`. The order in which these terms appear in the list is irrelevant. Zero terms are ignored, and duplicate keys are added together. Comparison of two polynomials now agrees with our intuitive understanding of what it means for polynomials to be equal:
+For example, the polynomial 5x<sup>3</sup> + 2x + 7 is expressed as `polynomial [(3, 5), (1, 2), (0, 7)]`. The order in which these terms appear in the list is irrelevant. Zero terms are ignored, and duplicate keys are added together. Comparison of two polynomials now agrees with our intuitive understanding of what it means for polynomials to be equal:
 
 ```haskell
 λ> polynomial [(3, 5), (1, 2), (0, 7)] == polynomial [(0, 7), (1, 2), (2, 0), (3, 5)]
