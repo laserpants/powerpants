@@ -4,15 +4,17 @@
 
 Polynomials are implemented as a map (`Data.Map.Strict.Map`) from degree keys to coefficient values. The `Polynomial` type constructor is parameterized by the type of its coefficients. Most of the implementation requires this type to be an instance of the `Eq` and `Algebra.Ring.C` type classes. This latter constraint is especially useful, since the set of polynomials with coefficients from a ring **R** itself forms a ring, usually denoted **R**[x]. 
 
-The degree of a term is a non-negative integer, so we introduce a new type `Nat` for this purpose. This is just an alias for `Number.NonNegative.Integer`, defined in [Numeric Prelude](http://hackage.haskell.org/package/numeric-prelude).
-
 ```haskell
 import Data.Map.Strict ( Map )
 
-type Nat = Number.NonNegative.Integer
-
 newtype Polynomial a = Px { terms :: Map Nat a }
   deriving (Show, Eq, Ord)
+```
+
+The degree of a term is a non-negative integer, so a new `Nat` type has been introduced for this purpose. This is just an alias for `Number.NonNegative.Integer`, defined in [Numeric Prelude](http://hackage.haskell.org/package/numeric-prelude).
+
+```haskell
+type Nat = Number.NonNegative.Integer
 ```
 
 Our API should allow for `Polynomial` values to be created from a sparse list of degree-coefficient pairs. To make things run smoothly, there are two invariants that need to be enforced. Firstly, there mustn't be any duplicate keys. This is already taken care of by the data structure. By using `fromListWith (+)` to create the map, values of those keys that appear more than once in the list are added together. Secondly, there shouldn't be any terms with coefficients equal to zero (i.e., things like 0x<sup>3</sup>). To eliminate zero coefficients, we can use the `filter` function in `Data.Map.Strict`. Here is the function we end up with:
