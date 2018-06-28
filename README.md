@@ -2,7 +2,7 @@
 
 ### Polynomials
 
-Polynomials are implemented as a map (`Data.Map.Strict.Map`) from degree keys to coefficient values. The `Polynomial` type constructor is parameterized by the type of its coefficients. Most of the implementation requires this type to be an instance of the `Eq` and `Algebra.Ring.C` type classes. This latter constraint is especially useful, since the set of polynomials with coefficients from a ring **R** itself forms a ring, usually denoted **R**[x]. 
+Polynomials are implemented as a map (`Data.Map.Strict.Map`) from degree keys to coefficient values. The `Polynomial` type constructor is parameterized by the type of the coefficients. Most of the implementation requires this type to be an instance of the `Eq` and `Algebra.Ring.C` type classes. This latter constraint is especially useful, since the set of polynomials with coefficients from a ring **R** itself forms a ring, usually denoted **R**[x]. 
 
 ```haskell
 import Data.Map.Strict ( Map )
