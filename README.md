@@ -79,6 +79,13 @@ The `Polynomial` type constructor is parameterized by the type of the coefficien
 
 ### Expressions in one variable
 
+#### Binary operators
+
+```haskell
+data Op = Add | Mul 
+  deriving (Show, Eq, Ord)
+```
+
 ### Symbolic algebra
 
 ### Simplifying expressions
