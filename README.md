@@ -75,6 +75,8 @@ neg = Px . Map.map negate . terms
 
 The `Polynomial` type constructor is parameterized by the type of the coefficients. Most of the implementation requires this type to be an instance of the `Eq` and `Algebra.Ring.C` type classes. This latter constraint is especially useful, since the set of polynomials with coefficients from a ring **R** itself forms a ring, usually denoted **R**[x]. 
 
+#### Constrained functor
+
 ### Expressions in one variable
 
 ### Symbolic algebra
