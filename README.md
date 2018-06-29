@@ -17,11 +17,11 @@ The degree of a term is a non-negative integer, so a new `Nat` type has been int
 type Nat = Number.NonNegative.Integer
 ```
 
-Our API should allow for `Polynomial` values to be created from a sparse list of degree-coefficient pairs. To make things run smoothly, there are two invariants that need to be enforced. Firstly, there mustn't be any duplicate keys. This is already taken care of by the data structure. By using `fromListWith (+)` to create the map, values of those keys that appear more than once in the list are added together. Secondly, there shouldn't be any terms with coefficients equal to zero (i.e., things like 0x<sup>3</sup>). To eliminate zero coefficients, we can use the `filter` function in `Data.Map.Strict`. Here is the function we end up with:
+Our API should allow for `Polynomial` values to be created from a sparse list of degree-coefficient pairs. To make things run smoothly, there are two invariants that need to be enforced. Firstly, there mustn't be any duplicate keys. This is already taken care of by the data structure. By using `fromListWith (+)` to create the map, values of those keys that appear more than once in the list are added together. Secondly, there shouldn't be any terms with coefficients equal to zero (i.e., things like 0x<sup>3</sup>). To eliminate these, we can use a simple predicate to `filter` out all pairs in which the second component is 0. Here is the function we end up with:
 
 ```haskell
 polynomial :: (Eq a, Algebra.Ring.C a) => [(Nat, a)] -> Polynomial a
-polynomial = Px . Map.filter (/= 0) . fromListWith (+)
+polynomial = Px . fromListWith (+) . filter nz where nz = (/= 0) . snd
 ```
 
 The `Polynomial` type itself is *opaque*. That is to say, the `Px` constructor is not exported. Instead we use the `polynomial` function as a &ndash; sort of &ndash; proxy for `Px`. This will ensure that `Polynomial` values always appear in this canonical form.
