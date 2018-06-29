@@ -17,7 +17,7 @@ The degree of a term is a non-negative integer, so a new `Nat` type has been int
 type Nat = Number.NonNegative.Integer
 ```
 
-Our API should allow for `Polynomial` values to be created from a sparse list of degree-coefficient pairs. To make things run smoothly, there are two invariants that need to be enforced. Firstly, there mustn't be any duplicate keys. This is already taken care of by the data structure. By using `fromListWith (+)` to create the map, values of those keys that appear more than once in the list are added together. Secondly, there shouldn't be any terms with coefficients equal to zero (i.e., things like 0x<sup>3</sup>). We therefore use a predicate to `filter` out pairs in which the second component is 0, before they reach the map. Here is the function we end up with:
+Our API should allow for `Polynomial` values to be created from a sparse list of degree-coefficient pairs. To make things run smoothly, there are two invariants that need to be enforced. Firstly, there mustn't be any duplicate keys. This is already taken care of by the data structure. Except that, when creating the map, we need to handle duplicates in the list of terms. By using `fromListWith (+)`, values of those keys that appear more than once are added together. Secondly, there shouldn't be any terms with coefficients equal to zero (i.e., things like 0x<sup>3</sup>). We therefore use a predicate to `filter` out pairs in which the second component is 0, before they reach the map. Here is the function we end up with:
 
 ```haskell
 polynomial :: (Eq a, Algebra.Ring.C a) => [(Nat, a)] -> Polynomial a
